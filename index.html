@@ -20,7 +20,7 @@
   --slab:'Alfa Slab One', Georgia, 'Times New Roman', serif;
   --sans:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
-*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
 html,body{margin:0; padding:0;}
 body{
   background:
@@ -28,8 +28,12 @@ body{
   min-height:100vh; min-height:100dvh; color:var(--stock); font-family:var(--sans);
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   overscroll-behavior:none;
+  -webkit-user-select:none; user-select:none;
 }
-.screen{display:none; max-width:460px; margin:0 auto; padding:14px 16px 28px; min-height:100vh; min-height:100dvh;}
+input,textarea{-webkit-user-select:text; user-select:text;}
+.screen{display:none; max-width:460px; margin:0 auto; padding:14px 16px 34px;
+  min-height:calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
 .screen.on{display:flex; flex-direction:column;}
 
 /* ---------- Home ---------- */
@@ -174,6 +178,66 @@ input.sm{padding:9px 10px; font-size:14px;}
 .center{text-align:center;}
 h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 4px;}
 
+.tilegrid{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
+.tilegrid .tile{margin:0; padding:15px 13px; border-radius:16px; min-height:106px;}
+.tilegrid .tile h2{font-size:16.5px;}
+.tilegrid .tile p{font-size:11.5px; max-width:100%;}
+.tilegrid .tile .wm{font-size:60px; right:-8px; bottom:-12px;}
+
+.scard .suitbig{font-size:clamp(44px,14vw,60px);}
+.scard .pip{font-size:clamp(14px,4vw,18px);}
+.scard{width:min(44vw,170px); aspect-ratio:5/7; background:var(--stock); color:var(--ink);
+  border-radius:13px; position:relative; box-shadow:0 8px 20px rgba(0,0,0,.4); margin:8px auto;}
+.pyr{display:flex; flex-direction:column-reverse; gap:6px; align-items:center; margin:8px 0;}
+.pyrrow{display:flex; gap:6px; justify-content:center;}
+.pcard{width:42px; height:59px; border-radius:6px; border:2px solid var(--stock);
+  background:repeating-linear-gradient(45deg,var(--felt-soft) 0 6px, var(--felt) 6px 12px);
+  display:grid; place-items:center; font-weight:800; font-size:13.5px;}
+.pcard.up{background:var(--stock);}
+.pcard.next{outline:2px solid var(--amber); outline-offset:2px;}
+.handrow{display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center; margin:5px 0; font-size:13.5px;}
+
+.dice{display:flex; gap:20px; justify-content:center; font-size:92px; line-height:1; margin:10px 0; color:var(--stock); min-height:100px;}
+.dice span{filter:drop-shadow(0 6px 10px rgba(0,0,0,.45));}
+
+.bigword{font-family:var(--slab); font-size:clamp(24px,7.5vw,38px); text-align:center; line-height:1.25;
+  margin:14px 0; min-height:110px; display:flex; align-items:center; justify-content:center;}
+.bombwrap{border:3px dashed var(--amber); border-radius:18px; padding:20px 14px; animation:pulse 1s infinite alternate;}
+@keyframes pulse{from{border-color:var(--amber)} to{border-color:var(--red)}}
+#bombBoom{position:fixed; inset:0; background:var(--red); z-index:50; display:none;
+  flex-direction:column; align-items:center; justify-content:center; gap:16px; text-align:center; padding:24px;}
+#bombBoom .boomtxt{font-family:var(--slab); font-size:56px;}
+#bombBoom .btn{width:min(80vw,300px);}
+
+.duelwrap{display:flex; flex-direction:column; flex:1; gap:10px; min-height:64dvh;}
+.zone{flex:1; border-radius:18px; background:rgba(0,0,0,.3); border:1px solid var(--line);
+  display:grid; place-items:center; font-family:var(--slab); font-size:24px; letter-spacing:.5px; text-align:center;}
+.zone.top{transform:rotate(180deg);}
+.zone.armed{background:#243b33;}
+.zone.go{background:#2f9e44; color:#fff;}
+.zone.lose{background:var(--red);}
+.zone.win{background:var(--amber); color:var(--ink);}
+.duelmid{text-align:center; color:var(--mist); font-size:12.5px; padding:0 8px;}
+
+#mwCount{position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
+  background:rgba(7,35,27,.92); font-family:var(--slab); font-size:120px; color:var(--amber);}
+
+@media (orientation: landscape) and (max-height: 520px){
+  #race-game{max-width:none; padding:8px 16px calc(8px + env(safe-area-inset-bottom));}
+  #race-game .top{margin-bottom:4px;}
+  #race-game .top h1{font-size:16px;}
+  #race-game .lane{height:60px;}
+  #race-game .horse{width:52px; height:52px; font-size:28px; top:4px;}
+  #race-game .sc{font-size:17px;}
+  #race-game #raceRotate{display:none;}
+  #race-game .banner{position:fixed; left:50%; top:10px; transform:translateX(-50%); z-index:6; min-width:300px;}
+  #race-game #raceDraw, #race-game #raceAgain{position:fixed; right:calc(16px + env(safe-area-inset-right));
+    bottom:calc(14px + env(safe-area-inset-bottom)); width:auto; padding:16px 26px; z-index:7; border-radius:999px;}
+  #race-game .drawncard{position:fixed; left:calc(16px + env(safe-area-inset-left));
+    bottom:calc(18px + env(safe-area-inset-bottom)); z-index:6; background:rgba(0,0,0,.55); border-radius:999px; padding:6px 14px;}
+  #race-game #raceBets{position:fixed; right:16px; top:48px; z-index:6; max-width:45vw; background:rgba(7,35,27,.92);}
+  #race-game .mtl{padding-top:0;}
+}
 @media (prefers-reduced-motion: reduce){
   .flip{transition:none;} .horse{transition:none;} .banner.pop{animation:none;}
 }
@@ -186,21 +250,32 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   <div class="logo">KANTINE</div>
   <div class="tagline">Drankspellen zonder kaartset — één telefoon is genoeg.</div>
 
-  <button class="tile" onclick="go('ftd-setup')">
-    <h2>Fuck the Dealer</h2>
-    <p>Gok de kaart. De telbalk laat zien wat er nog in het deck zit.</p>
-    <span class="wm">♠</span>
-  </button>
-  <button class="tile" onclick="go('race-setup')">
-    <h2>Paardenrace</h2>
-    <p>Vier azen racen. Zet slokken in op je paard.</p>
-    <span class="wm">♥</span>
-  </button>
-  <button class="tile" onclick="go('king-setup')">
-    <h2>Kingsen</h2>
-    <p>Trek een kaart, ken je regel. Spieken mag — met een tik.</p>
-    <span class="wm">♦</span>
-  </button>
+  <div class="tilegrid">
+    <button class="tile" onclick="go('ftd-setup')">
+      <h2>Fuck the Dealer</h2><p>Gok de kaart, tel het deck.</p><span class="wm">♠</span>
+    </button>
+    <button class="tile" onclick="openKing()">
+      <h2>Kingsen</h2><p>Ken je regel — of spiek.</p><span class="wm">♦</span>
+    </button>
+    <button class="tile" onclick="openBus()">
+      <h2>Bussen</h2><p>Vier vragen, piramide, bus.</p><span class="wm">♣</span>
+    </button>
+    <button class="tile" onclick="go('race-setup')">
+      <h2>Paardenrace</h2><p>Zet slokken in op je aas.</p><span class="wm">♥</span>
+    </button>
+    <button class="tile" onclick="openMex()">
+      <h2>Mexen</h2><p>Mex, vaasjes, laagste drinkt.</p><span class="wm">🎲</span>
+    </button>
+    <button class="tile" onclick="go('bomb-setup')">
+      <h2>Tikkende Tijdbom</h2><p>Noem iets en geef 'm door.</p><span class="wm">💣</span>
+    </button>
+    <button class="tile" onclick="duelOpen()">
+      <h2>Reactieduel</h2><p>Tik op groen. Te vroeg = dubbel.</p><span class="wm">⚡</span>
+    </button>
+    <button class="tile" onclick="mwOpen()">
+      <h2>Meest Waarschijnlijk</h2><p>3-2-1... wijs iemand aan.</p><span class="wm">👉</span>
+    </button>
+  </div>
 
   <div class="homefoot">Zet op je beginscherm via ‘Delen → Zet op beginscherm’ (iPhone) of ‘Installeren’ (Android).</div>
 </section>
@@ -236,6 +311,7 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   <div class="banner" id="ftdBanner">Gok de kaart</div>
   <div class="ranks" id="ftdRanks"></div>
   <div class="streak" id="ftdStreak"></div>
+  <div class="panel" id="ftdMini" style="display:none"></div>
   <div class="mtl"><button class="btn primary" id="ftdNext" onclick="ftdNext()" style="display:none">Volgende kaart</button></div>
 </section>
 
@@ -268,6 +344,7 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   </div>
   <div class="sidecards" id="raceSide"></div>
   <div class="track" id="raceTrack"></div>
+  <p class="note center" id="raceRotate">📺 Draai je telefoon horizontaal voor groot beeld</p>
   <div class="drawncard" id="raceDrawn">Tik op ‘Draai kaart’ om te starten</div>
   <div class="banner" id="raceBanner" style="display:none"></div>
   <div id="raceBets" class="panel" style="display:none"></div>
@@ -289,6 +366,11 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
     <input type="text" id="kingName" placeholder="Naam" onkeydown="if(event.key==='Enter')kingAdd()">
     <button class="btn ghost small" onclick="kingAdd()" style="flex:0 0 auto">Voeg toe</button>
   </div>
+  <label class="fld">Regelpack</label>
+  <div class="row">
+    <select id="kingPackSel" onchange="kingLoadPack(this.value)"></select>
+    <button class="btn ghost small" id="kingPackDel" onclick="kingDeletePack()" style="flex:0 0 auto; display:none">✕ wis</button>
+  </div>
   <label class="fld">Regels tonen</label>
   <div class="seg" id="kingHintSeg">
     <button data-h="tik" class="on" onclick="kingHint(this)">Na een tik</button>
@@ -299,7 +381,11 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   <details class="reglist"><summary>Regels bekijken &amp; aanpassen</summary>
     <p class="note">Dit is ook meteen de opfrislijst — alleen hier zichtbaar, niet tijdens het spel. Pas de tekst aan naar jullie huisregels; <b>{p}</b> wordt vervangen door de naam van de trekker.</p>
     <div id="kingEdit"></div>
-    <button class="btn ghost small mt" onclick="kingResetRules()">Herstel standaardregels</button>
+    <div class="row mt">
+      <input type="text" id="kingPackName" placeholder="Naam voor eigen pack">
+      <button class="btn ghost small" onclick="kingSavePack()" style="flex:0 0 auto">💾 Opslaan</button>
+    </div>
+    <button class="btn ghost small mt" onclick="kingResetRules()">↩︎ Herstel dit pack</button>
   </details>
   <div class="mtl"><button class="btn primary" onclick="kingStart()">Starten</button></div>
 </section>
@@ -325,6 +411,162 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   </div>
 </section>
 
+<!-- ================= BUSSEN SETUP ================= -->
+<section class="screen" id="bus-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Bussen</h1>
+  </div>
+  <label class="fld">Spelers (max 9)</label>
+  <div class="players" id="busChips"></div>
+  <div class="row">
+    <input type="text" id="busName" placeholder="Naam" onkeydown="if(event.key==='Enter')busAdd()">
+    <button class="btn ghost small" onclick="busAdd()" style="flex:0 0 auto">Voeg toe</button>
+  </div>
+  <label class="fld">Piramide-rijen</label>
+  <div class="seg" id="busRowSeg">
+    <button data-r="4" onclick="busRows(this)">4</button>
+    <button class="on" data-r="5" onclick="busRows(this)">5</button>
+  </div>
+  <label class="fld">Buslengte</label>
+  <div class="seg" id="busLenSeg">
+    <button data-b="4" onclick="busLenSet(this)">4</button>
+    <button class="on" data-b="5" onclick="busLenSet(this)">5</button>
+    <button data-b="6" onclick="busLenSet(this)">6</button>
+  </div>
+  <p class="note">Fase 1: vier vragen per speler, je kaarten liggen open. Fase 2: piramide — de app legt je kaarten automatisch en jij deelt uit. Fase 3: wie de meeste kaarten overhoudt gaat de bus in.</p>
+  <div class="mtl"><button class="btn primary" onclick="busStart()">Starten</button></div>
+</section>
+
+<!-- ================= BUSSEN GAME ================= -->
+<section class="screen" id="bus-game">
+  <div class="top">
+    <button class="back" onclick="go('bus-setup')">‹</button>
+    <h1>Bussen</h1>
+    <div class="meta" id="busMeta"></div>
+  </div>
+  <div id="busArea"></div>
+  <div class="panel" id="busHands" style="display:none"></div>
+</section>
+
+<!-- ================= MEXEN SETUP ================= -->
+<section class="screen" id="mex-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Mexen</h1>
+  </div>
+  <label class="fld">Spelers</label>
+  <div class="players" id="mexChips"></div>
+  <div class="row">
+    <input type="text" id="mexName" placeholder="Naam" onkeydown="if(event.key==='Enter')mexAdd()">
+    <button class="btn ghost small" onclick="mexAdd()" style="flex:0 0 auto">Voeg toe</button>
+  </div>
+  <p class="note">De eerste speler gooit maximaal 3× en bepaalt zo het aantal beurten voor de rest. Mex (2-1) is het hoogst en verdubbelt de slokken, dubbels tellen als honderdtallen, 3-1 is een vaasje (iedereen drinkt). De laagste worp van de ronde drinkt.</p>
+  <div class="mtl"><button class="btn primary" onclick="mexStart()">Starten</button></div>
+</section>
+
+<!-- ================= MEXEN GAME ================= -->
+<section class="screen" id="mex-game">
+  <div class="top">
+    <button class="back" onclick="go('mex-setup')">‹</button>
+    <h1>Mexen</h1>
+    <div class="meta" id="mexMeta"></div>
+  </div>
+  <div class="players" id="mexPlayers"></div>
+  <div class="dice" id="mexDice"><span>🎲</span><span>🎲</span></div>
+  <div class="banner" id="mexBanner">Eerste speler mag gooien</div>
+  <div class="panel" id="mexBoard" style="display:none"></div>
+  <div class="mtl">
+    <div class="row">
+      <button class="btn primary" id="mexRoll" onclick="mexRoll()">🎲 Gooi</button>
+      <button class="btn ghost" id="mexStay" onclick="mexStay()" style="display:none">Blijven staan</button>
+    </div>
+    <button class="btn primary mt" id="mexNextRound" onclick="mexRound()" style="display:none">Nieuwe ronde</button>
+  </div>
+</section>
+
+<!-- ================= TIJDBOM SETUP ================= -->
+<section class="screen" id="bomb-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Tikkende Tijdbom</h1>
+  </div>
+  <label class="fld">Lont</label>
+  <div class="seg" id="bombDurSeg">
+    <button data-d="12,35" onclick="bombDur(this)">Kort</button>
+    <button class="on" data-d="20,60" onclick="bombDur(this)">Normaal</button>
+    <button data-d="30,90" onclick="bombDur(this)">Lang</button>
+  </div>
+  <p class="note">De telefoon is de bom. Er verschijnt een categorie: noem iets en geef de telefoon door aan je buurman. Niemand weet wanneer hij afgaat — bij wie hij ontploft: drinken. Zet je geluid aan 🔊</p>
+  <div class="mtl"><button class="btn primary" onclick="bombStart()">💣 Steek de lont aan</button></div>
+</section>
+
+<!-- ================= TIJDBOM GAME ================= -->
+<section class="screen" id="bomb-game">
+  <div class="top">
+    <button class="back" onclick="bombStop();go('bomb-setup')">‹</button>
+    <h1>Tikkende Tijdbom</h1>
+  </div>
+  <div class="bombwrap">
+    <p class="note center" style="margin:0 0 4px">Noem iets en geef door →</p>
+    <div class="bigword" id="bombCat"></div>
+  </div>
+  <div class="row mt">
+    <button class="btn ghost small" onclick="bombSkip()" style="flex:1">⏭ Andere categorie</button>
+  </div>
+  <div class="mtl"><button class="btn ghost" onclick="bombStop();go('bomb-setup')">Stop</button></div>
+</section>
+<div id="bombBoom">
+  <div class="boomtxt">💥 BOEM!</div>
+  <div style="font-size:19px">Wie de telefoon vastheeft: <b>drinken!</b></div>
+  <button class="btn primary" onclick="bombAgain()">💣 Nieuwe bom</button>
+  <button class="btn ghost" onclick="bombClose()">Menu</button>
+</div>
+
+<!-- ================= REACTIEDUEL ================= -->
+<section class="screen" id="duel-game">
+  <div class="top">
+    <button class="back" onclick="duelReset();go('home')">‹</button>
+    <h1>Reactieduel</h1>
+    <div class="meta" id="duelScore">0 — 0</div>
+  </div>
+  <div class="duelwrap">
+    <div class="zone top" id="zoneA" onpointerdown="duelTap(0)">Speler boven</div>
+    <div class="duelmid" id="duelMid">Eén speler boven, één onder. Tik als het groen wordt — te vroeg is dubbel drinken.</div>
+    <div class="zone" id="zoneB" onpointerdown="duelTap(1)">Speler onder</div>
+  </div>
+  <div class="mtl"><button class="btn primary" id="duelStartBtn" onclick="duelStart()">Start ronde</button></div>
+</section>
+
+<!-- ================= MEEST WAARSCHIJNLIJK SETUP ================= -->
+<section class="screen" id="mw-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Meest Waarschijnlijk</h1>
+  </div>
+  <label class="fld">Kies je packs</label>
+  <div class="players" id="mwPacks"></div>
+  <p class="note">Stelling op het scherm, aftellen, en iedereen wijst tegelijk iemand aan. De meeste vingers = drinken. Stellingen herhalen zich niet tot een pack helemaal op is.</p>
+  <div class="mtl"><button class="btn primary" onclick="mwStart()">Starten</button></div>
+</section>
+
+<!-- ================= MEEST WAARSCHIJNLIJK GAME ================= -->
+<section class="screen" id="mw-game">
+  <div class="top">
+    <button class="back" onclick="go('mw-setup')">‹</button>
+    <h1>Meest Waarschijnlijk</h1>
+    <div class="meta" id="mwMeta"></div>
+  </div>
+  <div class="bigword" id="mwText"></div>
+  <div class="banner" id="mwHint" style="display:none">👉 Meeste vingers = drinken</div>
+  <div class="mtl">
+    <button class="btn primary" id="mwCountBtn" onclick="mwCountdown()">🫵 Tel af: 3-2-1 wijs!</button>
+    <button class="btn primary" id="mwNextBtn" onclick="mwNext()" style="display:none">Volgende stelling</button>
+  </div>
+</section>
+<div id="mwCount"></div>
+
+<script src="content.js"></script>
 <script>
 /* ================= Gedeeld ================= */
 const $=(q,el=document)=>el.querySelector(q);
@@ -370,9 +612,13 @@ function ftdMode(btn){
 }
 function ftdStart(){
   F.deck=makeDeck(); F.counts={}; RANKS.forEach(r=>F.counts[r.v]=4);
-  F.streak=0; go('ftd-game'); ftdRenderBar(); ftdRenderStreak(); ftdDeal();
+  F.streak=0; F.miniOpen=false; F.busy=false;
+  const m=document.querySelector('#ftdMini'); if(m) m.style.display='none';
+  go('ftd-game'); ftdRenderBar(); ftdRenderStreak(); ftdDeal();
 }
 function ftdDeal(){
+  if(F.busy) return;
+  F.busy=true;
   F.cur=F.deck.pop(); F.phase='g1';
   $('#ftdLeft').textContent=F.deck.length+1;
   $('#ftdNext').style.display='none';
@@ -382,6 +628,7 @@ function ftdDeal(){
     if(F.mode==='dealer'){ flip.classList.add('shown'); setBanner('#ftdBanner','Hij gokt hardop — tik zijn gok in',''); }
     else setBanner('#ftdBanner','Gok de kaart','');
     ftdRenderRanks(()=>false);
+    F.busy=false;
   },280);
 }
 function ftdRenderBar(){
@@ -428,6 +675,7 @@ function ftdResolve(good,n){
   const btn=$('#ftdNext'); btn.style.display='block';
   if(F.deck.length===0){ btn.textContent='Deck is leeg — opnieuw schudden'; btn.onclick=ftdStart; }
   else{ btn.textContent='Volgende kaart'; btn.onclick=ftdDeal; }
+  if(F.counts[F.cur.v]===0) ftdShowMini(F.cur.l);
 }
 function ftdNext(){}
 function setBanner(sel,txt,mood){
@@ -462,10 +710,11 @@ function raceStart(){
   $('#raceBanner').style.display='none'; $('#raceBets').style.display='none';
   $('#raceDraw').style.display='block'; $('#raceAgain').style.display='none';
   $('#raceDrawn').textContent='Tik op ‘Draai kaart’ om te starten';
+  $('#raceMeta').innerHTML=R.deck.length+' kaarten<br>in het deck';
   raceRender();
 }
-function raceRender(){
-  $('#raceMeta').innerHTML=(R.deck.length)+' kaarten<br>in het deck';
+function raceRender(){ raceRenderSide(); raceBuildTrack(); requestAnimationFrame(raceLayout); }
+function raceRenderSide(){
   const cols=R.len+2;
   const sideEl=$('#raceSide');
   sideEl.style.gridTemplateColumns=`repeat(${cols},1fr)`;
@@ -473,12 +722,13 @@ function raceRender(){
     const cls=sc.card.c==='red'?'redsuit':'blacksuit';
     return `<div class="sc ${sc.flipped?'flipped':''}">${sc.flipped?`<span class="${cls}">${sc.card.l}${sc.card.s}</span>`:''}</div>`;
   }).join('')+'<div style="display:grid;place-items:center">🏁</div>';
+}
+function raceBuildTrack(){
   const track=$('#raceTrack');
   track.innerHTML=SUITS.map(su=>{
     const cls=su.c==='red'?'redsuit':'blacksuit';
     return `<div class="lane"><div class="horse" id="h${su.s.codePointAt(0)}"><span class="${cls}">${su.s}</span></div></div>`;
   }).join('');
-  requestAnimationFrame(raceLayout);
 }
 function raceLayout(){
   const lane=$('.lane'); if(!lane) return;
@@ -491,6 +741,9 @@ function raceLayout(){
 window.addEventListener('resize',raceLayout);
 function raceDraw(){
   if(R.over||R.anim) return;
+  const now=Date.now();
+  if(now-(R.last||0)<350) return;
+  R.last=now;
   if(R.deck.length===0){ R.deck=shuffle(R.used); R.used=[]; }
   const c=R.deck.pop(); R.used.push(c);
   R.pos[c.s]++;
@@ -513,7 +766,7 @@ function raceAfterMove(){
       R.pos[sc.card.s]=Math.max(0,R.pos[sc.card.s]-1);
       const cls=sc.card.c==='red'?'redsuit':'blacksuit';
       $('#raceDrawn').innerHTML=`Zijkaart <span class="mini"><span class="${cls}">${sc.card.l}${sc.card.s}</span></span> — ${sc.card.s} stapt terug!`;
-      raceRender(); R.anim=false;
+      raceRenderSide(); raceLayout(); R.anim=false;
       raceAfterMove();
     },600);
   }
@@ -550,9 +803,95 @@ const KRULES={
   14:['Waterval','Iedereen begint tegelijk met drinken. Je mag pas stoppen als je buurman vóór je stopt — {p} bepaalt zelf.']
 };
 K.def=JSON.parse(JSON.stringify(KRULES));
+const PACKS={
+  nl:{name:'Standaard NL', rules:KRULES},
+  student:{name:'Studentenhuis', rules:{
+    2:['Zelf drinken','Neem zelf 2 slokken.'],
+    3:['Linkerbuur','Je linkerbuur drinkt 3 slokken.'],
+    4:['Rechterbuur','Je rechterbuur drinkt 4 slokken.'],
+    5:['Plaskaart','{p} heeft de plaskaart en mag naar de wc. Zonder plaskaart naar de wc = drinken.'],
+    6:['Drinkmaatje','{p} kiest een drinkmaatje — die drinkt vanaf nu elke keer met {p} mee.'],
+    7:['Juffen','Tel om de beurt vanaf 1. Bij een getal met een 7 of uit de tafel van 7 zeg je "juf" en draait de richting om. Fout = drinken.'],
+    8:['Regel','{p} bedenkt een nieuwe regel. Overtreden = drinken.'],
+    9:['Rijmen','{p} zegt een woord, de rest rijmt de kring rond. Wie vastloopt of herhaalt, drinkt.'],
+    10:['Categorieën','{p} kiest een categorie (bijv. biermerken). Wie niks meer weet, drinkt.'],
+    11:['Opdracht','{p} geeft één speler een opdracht. Weigeren = shotje.'],
+    12:['Duimen','{p} legt op een zelfgekozen moment een duim op tafel. De laatste die volgt, drinkt.'],
+    13:['Koning','Schenk wat van je drankje in de middenbeker. De 4e koning drinkt hem leeg!'],
+    14:['Waterval','Iedereen begint tegelijk met drinken. Je mag pas stoppen als je buurman vóór je stopt — {p} bepaalt zelf.']
+  }},
+  us:{name:"King's Cup (VS)", rules:{
+    2:['You','Geef 2 slokken aan wie je wil.'],
+    3:['Me','Neem zelf 3 slokken.'],
+    4:['Floor','Laatste die de vloer aanraakt, drinkt.'],
+    5:['Guys','Alle mannen drinken.'],
+    6:['Chicks','Alle vrouwen drinken.'],
+    7:['Heaven','Laatste die omhoog wijst, drinkt.'],
+    8:['Mate','{p} kiest een maatje — die drinkt vanaf nu elke keer met {p} mee.'],
+    9:['Rhyme','{p} zegt een woord, de rest rijmt de kring rond. Wie vastloopt, drinkt.'],
+    10:['Categories','{p} kiest een categorie. Wie niks meer weet, drinkt.'],
+    11:['Rule','{p} bedenkt een nieuwe regel. Overtreden = drinken.'],
+    12:['Questions','{p} is question master. Geef je antwoord op een vraag van {p}? Drinken.'],
+    13:["King's Cup",'Schenk wat van je drankje in de middenbeker. De 4e koning drinkt hem leeg!'],
+    14:['Waterfall','Iedereen begint tegelijk met drinken. Je mag pas stoppen als je buurman vóór je stopt — {p} bepaalt zelf.']
+  }},
+  mild:{name:'Rustig aan', rules:{
+    2:['Uitdelen','Geef 1 slok aan wie je wil.'],
+    3:['Zelf drinken','Neem zelf 1 slok.'],
+    4:['Vloer','Laatste die de vloer aanraakt, neemt een slokje.'],
+    5:['Duimmeester','{p} is duimmeester. Legt {p} een duim op tafel, dan neemt de laatste die volgt een slokje.'],
+    6:['Proosten','Iedereen proost en neemt één slok.'],
+    7:['Heaven','Laatste die omhoog wijst, neemt een slokje.'],
+    8:['Maatje','{p} kiest een maatje — die drinkt (klein slokje) met {p} mee.'],
+    9:['Rijmen','{p} zegt een woord, de rest rijmt de kring rond. Wie vastloopt, neemt een slokje.'],
+    10:['Categorieën','{p} kiest een categorie. Wie niks meer weet, neemt een slokje.'],
+    11:['Regel','{p} bedenkt een nieuwe regel. Overtreden = slokje.'],
+    12:['Vragenmeester','{p} is vragenmeester. Antwoord geven op een vraag van {p} = slokje.'],
+    13:['Koning','Schenk een klein beetje (fris mag ook) in de middenbeker. De 4e koning drinkt hem leeg.'],
+    14:['Mini-waterval','Korte waterval van maximaal 5 tellen, {p} telt af.']
+  }}
+};
+function store(k,v){try{localStorage.setItem('kantine.'+k,JSON.stringify(v));}catch(e){}}
+function load(k,d){try{const x=localStorage.getItem('kantine.'+k);return x!==null?JSON.parse(x):d;}catch(e){return d;}}
+K.pack='nl';
+K.customs=load('packs',{});
+function kingRenderPackSel(){
+  const sel=$('#kingPackSel');
+  const opts=Object.entries(PACKS).map(([id,p])=>`<option value="${id}">${p.name}</option>`)
+    .concat(Object.entries(K.customs).map(([id,p])=>`<option value="c:${id}">★ ${esc(p.name)}</option>`));
+  sel.innerHTML=opts.join('');
+  sel.value=K.pack;
+  if(sel.value!==K.pack){ K.pack='nl'; sel.value='nl'; }
+  $('#kingPackDel').style.display=K.pack.startsWith('c:')?'block':'none';
+}
+function kingPackRules(id){
+  if(id.startsWith('c:')){ const c=K.customs[id.slice(2)]; return c?c.rules:KRULES; }
+  return (PACKS[id]||PACKS.nl).rules;
+}
+function kingLoadPack(id){
+  K.pack=id;
+  K.def=JSON.parse(JSON.stringify(kingPackRules(id)));
+  store('lastpack',id);
+  kingRenderPackSel(); kingRenderEdit();
+}
+function kingSavePack(){
+  const inp=$('#kingPackName'); const name=inp.value.trim();
+  if(!name){ inp.placeholder='Geef je pack eerst een naam…'; inp.focus(); return; }
+  const id=name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||('pack-'+Date.now());
+  K.customs[id]={name, rules:JSON.parse(JSON.stringify(K.def))};
+  store('packs',K.customs);
+  inp.value=''; K.pack='c:'+id; store('lastpack',K.pack);
+  kingRenderPackSel();
+}
+function kingDeletePack(){
+  if(!K.pack.startsWith('c:')) return;
+  delete K.customs[K.pack.slice(2)];
+  store('packs',K.customs);
+  kingLoadPack('nl');
+}
 function esc(s){return s.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');}
 function kingEditRule(v,f,val){ if(f==='t') K.def[v][0]=val; else K.def[v][1]=val; }
-function kingResetRules(){ K.def=JSON.parse(JSON.stringify(KRULES)); kingRenderEdit(); }
+function kingResetRules(){ kingLoadPack(K.pack); }
 function kingRenderEdit(){
   $('#kingEdit').innerHTML=Object.keys(KRULES).map(v=>{
     const r=RANKS.find(x=>x.v==v);
@@ -565,9 +904,9 @@ function kingRenderEdit(){
 function kingAdd(){
   const inp=$('#kingName'); const n=inp.value.trim();
   if(!n) return;
-  K.names.push(n); inp.value=''; inp.focus(); kingRenderSetup();
+  K.names.push(n); inp.value=''; inp.focus(); kingRenderSetup(); store('names',K.names);
 }
-function kingRemove(i){ K.names.splice(i,1); kingRenderSetup(); }
+function kingRemove(i){ K.names.splice(i,1); kingRenderSetup(); store('names',K.names); }
 function kingRenderSetup(){
   $('#kingChips').innerHTML=K.names.map((n,i)=>`<span class="chip">${n}<span class="x" onclick="kingRemove(${i})">✕</span></span>`).join('');
 }
@@ -577,7 +916,7 @@ function kingHint(btn){
 }
 function kingStart(){
   if(K.names.length<2){ $('#kingName').placeholder='Minstens 2 spelers…'; $('#kingName').focus(); return; }
-  K.deck=makeDeck(); K.idx=0; K.kings=0; K.thumb=null; K.qm=null; K.rules=[]; K.links={}; K.over=false;
+  K.deck=makeDeck(); K.idx=0; K.kings=0; K.thumb=null; K.qm=null; K.rules=[]; K.links={}; K.over=false; K.phase='ready';
   go('king-game'); kingRenderState();
   $('#kingFlip').classList.remove('shown');
   $('#kingRuleArea').innerHTML='';
@@ -621,7 +960,8 @@ function kingChains(){
   return out;
 }
 function kingDraw(){
-  if(K.over) return;
+  if(K.over||K.phase!=='ready'||!K.deck.length) return;
+  K.phase='drawn';
   K.cur=K.deck.pop();
   const p=K.names[K.idx];
   if(K.cur.v===13) K.kings++;
@@ -670,6 +1010,7 @@ function kingPickMate(n){
   kingRenderState(); kingRefreshArea();
 }
 function kingNextTurn(){
+  if(K.phase!=='drawn'||K.over) return;
   const nr=$('#kingNewRule');
   if(nr && nr.value.trim()){ K.rules.push(nr.value.trim()); }
   if(K.deck.length===0){
@@ -678,6 +1019,7 @@ function kingNextTurn(){
     $('#kingNextBtn').onclick=()=>{ $('#kingNextBtn').onclick=kingNextTurn; $('#kingNextBtn').textContent='Volgende speler'; go('king-setup'); };
     return;
   }
+  K.phase='ready';
   K.idx=(K.idx+1)%K.names.length;
   $('#kingFlip').classList.remove('shown');
   setTimeout(()=>{ $('#kingRuleArea').innerHTML=''; },240);
@@ -685,8 +1027,510 @@ function kingNextTurn(){
   $('#kingNextBtn').style.display='none';
   kingRenderState();
 }
+/* Boot: opgeslagen namen en pack laden (werkt alleen in de echte app, niet in preview) */
+K.names=load('names',[]);
+kingRenderSetup();
+const lastPack=load('lastpack','nl');
+if(lastPack==='nl'||PACKS[lastPack]||(lastPack.startsWith('c:')&&K.customs[lastPack.slice(2)])) K.pack=lastPack;
+K.def=JSON.parse(JSON.stringify(kingPackRules(K.pack)));
+kingRenderPackSel();
 kingRenderEdit();
 addBet();
+
+/* ================= Gedeelde helpers (v4) ================= */
+function bagNext(key, arr){
+  let s=load(key,null);
+  if(!s || !Array.isArray(s.o) || s.o.length!==arr.length){ s={o:shuffle([...arr.keys()]), i:0}; }
+  if(s.i>=s.o.length){ s.o=shuffle(s.o); s.i=0; }
+  const v=arr[s.o[s.i]]; s.i++; store(key,s); return v;
+}
+function openKing(){ K.names=load('names',K.names); kingRenderSetup(); go('king-setup'); }
+function openBus(){ B.names=load('names',[]); busRenderSetup(); go('bus-setup'); }
+function openMex(){ M.names=load('names',[]); mexRenderSetup(); go('mex-setup'); }
+
+/* ================= FtD minigames ================= */
+const MINIGAMES=[
+  ['Juffen','Tel om de beurt vanaf 1. Bij een getal met een 7 of uit de tafel van 7 zeg je "juf" en draait de richting om. Fout = drinken.'],
+  ['Duimen','De trekker legt op een zelfgekozen moment een duim op tafel. De laatste die volgt, drinkt.'],
+  ['Wijzen','Tel af: 3-2-1... iedereen wijst tegelijk iemand aan. De meeste vingers = drinken.'],
+  ['Categorieën','Categorie: {cat}. Om de beurt iets noemen — wie niks meer weet of hapert, drinkt.'],
+  ['Rijmen','De trekker zegt een woord, de rest rijmt de kring rond. Vastlopen of herhalen = drinken.'],
+  ['Vikingen','De trekker is de Viking: hoorns boven je hoofd, de rest moet roeien. De laatste roeier drinkt. De Viking gooit de hoorns door wanneer hij wil.'],
+  ['Waterval','Iedereen drinkt tegelijk. Je mag pas stoppen als je buurman vóór je stopt — de trekker bepaalt.'],
+  ['Heaven','De trekker wijst onopvallend omhoog. De laatste die volgt, drinkt.']
+];
+function ftdShowMini(l){
+  const box=$('#ftdMini');
+  const opts=MINIGAMES.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join('');
+  box.style.display='block';
+  box.innerHTML=`<h3>Alle ${l}'s zijn eruit! 🎉</h3>
+    <p class="note" style="margin-top:0">Wie de laatste ${l} trok, kiest een minigame voor de hele groep:</p>
+    <select id="ftdMiniSel" onchange="ftdMiniDesc(this.value)">${opts}</select>
+    <div class="rule" id="ftdMiniTxt"></div>
+    <button class="btn primary mt" onclick="ftdMiniDone()">Gespeeld ✔</button>`;
+  ftdMiniDesc(0);
+  $('#ftdNext').style.display='none';
+  F.miniOpen=true;
+}
+function ftdMiniDesc(i){
+  let d=MINIGAMES[i][1];
+  if(d.includes('{cat}')) d=d.replace('{cat}','"'+bagNext('bag.cat',CATEGORIES)+'"');
+  $('#ftdMiniTxt').textContent=d;
+}
+function ftdMiniDone(){
+  F.miniOpen=false;
+  $('#ftdMini').style.display='none';
+  $('#ftdNext').style.display='block';
+}
+
+/* ================= Bussen ================= */
+const B={names:[],rows:5,busLen:5,deck:[],hands:{},pi:0,qi:0,pyr:[],pIdx:0,loser:null,busCards:[],busPos:0,fouten:0,phase:'q'};
+function busAdd(){
+  const inp=$('#busName'); const n=inp.value.trim();
+  if(!n||B.names.length>=9) return;
+  B.names.push(n); inp.value=''; inp.focus(); busRenderSetup(); store('names',B.names);
+}
+function busRemove(i){ B.names.splice(i,1); busRenderSetup(); store('names',B.names); }
+function busRenderSetup(){
+  $('#busChips').innerHTML=B.names.map((n,i)=>`<span class="chip">${n}<span class="x" onclick="busRemove(${i})">✕</span></span>`).join('');
+}
+function busRows(btn){ document.querySelectorAll('#busRowSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); B.rows=parseInt(btn.dataset.r); }
+function busLenSet(btn){ document.querySelectorAll('#busLenSeg button').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); B.busLen=parseInt(btn.dataset.b); }
+function busStart(){
+  if(B.names.length<2){ $('#busName').placeholder='Minstens 2 spelers…'; $('#busName').focus(); return; }
+  B.deck=makeDeck(); B.hands={}; B.names.forEach(n=>B.hands[n]=[]);
+  B.pi=0; B.qi=0; B.phase='q'; B.fouten=0;
+  go('bus-game');
+  $('#busHands').style.display='block';
+  busRenderHands(); busQ();
+}
+function busMeta(t){ $('#busMeta').innerHTML=t; }
+function busRenderHands(){
+  $('#busHands').innerHTML='<h3>Kaarten op tafel</h3>'+B.names.map(n=>{
+    const cards=B.hands[n].map(c=>`<span class="mini"><span class="${c.c==='red'?'redsuit':'blacksuit'}">${c.l}${c.s}</span></span>`).join(' ');
+    return `<div class="handrow"><b>${n}</b> ${cards||'<span class="note">—</span>'}</div>`;
+  }).join('');
+}
+function busQ(){
+  const p=B.names[B.pi], h=B.hands[p];
+  busMeta('Fase 1<br>vraag '+(B.qi+1)+'/4');
+  const titles=['Rood of zwart?','Hoger of lager dan je 1e kaart?','Binnen of buiten je eerste twee?','Welke soort?'];
+  let btns='';
+  if(B.qi===0) btns=`<div class="row"><button class="btn primary" onclick="busAns('rood')">🟥 Rood</button><button class="btn primary" onclick="busAns('zwart')">⬛ Zwart</button></div>`;
+  else if(B.qi===1) btns=`<div class="row"><button class="btn primary" onclick="busAns('hoger')">⬆ Hoger</button><button class="btn primary" onclick="busAns('lager')">⬇ Lager</button></div>`;
+  else if(B.qi===2) btns=`<div class="row"><button class="btn primary" onclick="busAns('binnen')">↔ Binnen</button><button class="btn primary" onclick="busAns('buiten')">⇔ Buiten</button></div>`;
+  else btns=`<div class="ranks" style="grid-template-columns:repeat(4,1fr)">${SUITS.map(s=>`<button class="rk" onclick="busAns('${s.s}')"><span class="${s.c==='red'?'redsuit':''}">${s.s}</span></button>`).join('')}</div>`;
+  $('#busArea').innerHTML=`
+    <div class="banner">${p} — ${titles[B.qi]}</div>
+    ${btns}`;
+}
+function busAns(ans){
+  const p=B.names[B.pi], h=B.hands[p];
+  const c=B.deck.pop();
+  let good=false, note='';
+  if(B.qi===0) good=(c.c==='red')===(ans==='rood');
+  else if(B.qi===1){
+    if(c.v===h[0].v){ good=false; note=' (paal!)'; }
+    else good=(ans==='hoger')===(c.v>h[0].v);
+  }else if(B.qi===2){
+    const lo=Math.min(h[0].v,h[1].v), hi=Math.max(h[0].v,h[1].v);
+    if(c.v===lo||c.v===hi){ good=false; note=' (paal!)'; }
+    else good=(ans==='binnen')===(c.v>lo&&c.v<hi);
+  }else good=(c.s===ans);
+  h.push(c);
+  busRenderHands();
+  const n=B.qi+1;
+  const msg=good?`GOED — deel ${n} uit!`:`FOUT${note} — drink ${n}`;
+  $('#busArea').innerHTML=`
+    <div class="scard">${faceHTML(c)}</div>
+    <div class="banner ${good?'good':'bad'} pop">${p}: ${msg}</div>
+    <button class="btn primary" onclick="busNextQ()">Verder</button>`;
+}
+function busNextQ(){
+  B.pi++;
+  if(B.pi>=B.names.length){ B.pi=0; B.qi++; }
+  if(B.qi>=4) return busPyrInit();
+  busQ();
+}
+function busPyrInit(){
+  B.phase='pyr'; B.pyr=[]; B.pIdx=0;
+  for(let r=0;r<B.rows;r++){
+    const row=[];
+    for(let i=0;i<B.rows-r;i++) row.push({card:B.deck.pop(),up:false});
+    B.pyr.push(row);
+  }
+  busPyrRender();
+}
+function busPyrFlat(){ const f=[]; B.pyr.forEach((row,r)=>row.forEach(c=>f.push({...c,r}))); return f; }
+function busPyrRender(msg){
+  busMeta('Fase 2<br>piramide');
+  let idx=0;
+  const rowsHtml=B.pyr.map((row,r)=>{
+    const sips=(r===B.rows-1)?(r+1)*2:(r+1);
+    return `<div class="pyrrow">`+row.map(c=>{
+      const isNext=(idx===B.pIdx&&!c.up); const cls=c.up?'up':''; const nx=idx===B.pIdx?'next':'';
+      idx++;
+      return `<div class="pcard ${cls} ${nx}">${c.up?`<span class="${c.card.c==='red'?'redsuit':'blacksuit'}">${c.card.l}${c.card.s}</span>`:sips}</div>`;
+    }).join('')+`</div>`;
+  }).join('');
+  const total=B.pyr.reduce((a,r)=>a+r.length,0);
+  $('#busArea').innerHTML=`
+    <div class="pyr">${rowsHtml}</div>
+    ${msg?`<div class="banner pop">${msg}</div>`:'<div class="banner">Kaart erop? De app legt \'m vanzelf voor je op.</div>'}
+    ${B.pIdx<total?`<button class="btn primary" onclick="busPyrFlip()">Draai kaart ${B.pIdx+1}/${total}</button>`
+      :`<button class="btn primary" onclick="busToBus()">Naar de bus 🚌</button>`}`;
+}
+function busPyrFlip(){
+  let idx=0, target=null, row=0;
+  B.pyr.forEach((r,ri)=>r.forEach(c=>{ if(idx===B.pIdx){ target=c; row=ri; } idx++; }));
+  if(!target) return;
+  target.up=true; B.pIdx++;
+  const sips=(row===B.rows-1)?(row+1)*2:(row+1);
+  const msgs=[];
+  B.names.forEach(n=>{
+    const m=B.hands[n].filter(c=>c.v===target.card.v);
+    if(m.length){
+      B.hands[n]=B.hands[n].filter(c=>c.v!==target.card.v);
+      msgs.push(`<b>${n}</b> legt ${m.length}× ${target.card.l} — deelt ${m.length*sips} uit!`);
+    }
+  });
+  busRenderHands();
+  busPyrRender(msgs.length?msgs.join('<br>'):`Niemand heeft een ${target.card.l}.`);
+}
+function busToBus(){
+  let loser=B.names[0];
+  for(const n of B.names){
+    const a=B.hands[n].length, b=B.hands[loser].length;
+    if(a>b) loser=n;
+    else if(a===b && n!==loser){
+      const ma=Math.max(0,...B.hands[n].map(c=>c.v)), mb=Math.max(0,...B.hands[loser].map(c=>c.v));
+      if(ma>mb) loser=n;
+    }
+  }
+  B.loser=loser; B.phase='bus'; B.fouten=0;
+  busBusRow(true);
+}
+function busBusRow(first){
+  if(B.deck.length<B.busLen+1) B.deck=makeDeck();
+  B.busCards=[]; for(let i=0;i<B.busLen;i++) B.busCards.push(B.deck.pop());
+  B.busPos=0;
+  busBusRender(first?`🚌 ${B.loser} gaat de bus in!`:null);
+}
+function busBusRender(msg){
+  busMeta('Fase 3<br>de bus');
+  const cur=B.busCards[B.busPos];
+  const row=B.busCards.map((c,i)=>{
+    const up=i<=B.busPos;
+    return `<div class="pcard ${up?'up':''} ${i===B.busPos+1?'next':''}">${up?`<span class="${c.c==='red'?'redsuit':'blacksuit'}">${c.l}${c.s}</span>`:'?'}</div>`;
+  }).join('');
+  const done=B.busPos>=B.busLen-1;
+  $('#busArea').innerHTML=`
+    ${msg?`<div class="banner pop">${msg}</div>`:''}
+    <div class="banner">${B.loser} in de bus — fouten: ${B.fouten}</div>
+    <div class="pyrrow" style="margin:10px 0">${row}</div>
+    ${done?`<div class="banner good pop">${B.loser} is uit de bus! 🎉</div>
+      <button class="btn primary" onclick="go('bus-setup')">Nieuw potje</button>`
+    :`<div class="row">
+      <button class="btn primary" onclick="busGuess('hoger')">⬆ Hoger</button>
+      <button class="btn primary" onclick="busGuess('lager')">⬇ Lager</button>
+    </div>
+    <p class="note center">Hoger of lager dan de ${cur.l}${cur.s}? Gelijk telt als fout.</p>`}`;
+}
+function busGuess(ans){
+  const cur=B.busCards[B.busPos], nxt=B.busCards[B.busPos+1];
+  let good;
+  if(nxt.v===cur.v) good=false;
+  else good=(ans==='hoger')===(nxt.v>cur.v);
+  if(good){ B.busPos++; busBusRender(); }
+  else{
+    B.fouten++;
+    busBusRow(false);
+    busBusRender(`De ${nxt.l}${nxt.s} — FOUT, drink 1 en opnieuw!`);
+  }
+}
+
+/* ================= Mexen ================= */
+const M={names:[],idx:0,maxT:3,used:0,dice:[0,0],locked:{},mex:0,vaasje:false,phase:'idle',rolling:false,tieList:[],tieScores:{}};
+const DIE='⚀⚁⚂⚃⚄⚅';
+function mexAdd(){
+  const inp=$('#mexName'); const n=inp.value.trim();
+  if(!n) return;
+  M.names.push(n); inp.value=''; inp.focus(); mexRenderSetup(); store('names',M.names);
+}
+function mexRemove(i){ M.names.splice(i,1); mexRenderSetup(); store('names',M.names); }
+function mexRenderSetup(){
+  $('#mexChips').innerHTML=M.names.map((n,i)=>`<span class="chip">${n}<span class="x" onclick="mexRemove(${i})">✕</span></span>`).join('');
+}
+function mexStart(){
+  if(M.names.length<2){ $('#mexName').placeholder='Minstens 2 spelers…'; $('#mexName').focus(); return; }
+  go('mex-game'); mexRound();
+}
+function mexScore(a,b){
+  const hi=Math.max(a,b), lo=Math.min(a,b);
+  if(hi===2&&lo===1) return {v:1000,d:'MEX!'};
+  if(a===b) return {v:a*100,d:''+(a*100)};
+  return {v:hi*10+lo,d:''+(hi*10+lo)};
+}
+function mexRound(){
+  M.idx=0; M.maxT=3; M.used=0; M.locked={}; M.mex=0; M.phase='turn'; M.rolling=false; M.tieList=[];
+  $('#mexNextRound').style.display='none';
+  $('#mexRoll').style.display='block'; $('#mexStay').style.display='none';
+  $('#mexDice').innerHTML='<span>🎲</span><span>🎲</span>';
+  $('#mexBoard').style.display='none';
+  setBanner('#mexBanner',`${M.names[0]} mag gooien (max 3×)`,'');
+  mexRenderPlayers();
+}
+function mexRenderPlayers(){
+  const active = M.phase==='tie' ? M.tieList[0] : M.names[M.idx];
+  $('#mexPlayers').innerHTML=M.names.map(n=>{
+    const s=M.locked[n]?` · ${M.locked[n].d}`:'';
+    return `<span class="chip ${n===active?'on':''}">${n}${s}</span>`;
+  }).join('');
+  $('#mexMeta').innerHTML=(M.phase==='tie'?'gooi om!':`worp ${Math.min(M.used+1,M.maxT)}/${M.maxT}`);
+}
+function mexShowDice(a,b){ $('#mexDice').innerHTML=`<span>${DIE[a-1]}</span><span>${DIE[b-1]}</span>`; }
+function mexRoll(){
+  if(M.rolling||M.phase==='done') return;
+  M.rolling=true;
+  $('#mexRoll').disabled=true; $('#mexStay').style.display='none';
+  let t=0;
+  const iv=setInterval(()=>{
+    mexShowDice(1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6));
+    if(++t>=6){
+      clearInterval(iv);
+      const a=1+Math.floor(Math.random()*6), b=1+Math.floor(Math.random()*6);
+      mexShowDice(a,b);
+      M.rolling=false; $('#mexRoll').disabled=false;
+      mexResult(a,b);
+    }
+  },70);
+}
+function mexResult(a,b){
+  const sc=mexScore(a,b);
+  const hi=Math.max(a,b), lo=Math.min(a,b);
+  const vaasje=(hi===3&&lo===1);
+  if(M.phase==='tie') return mexTieResult(sc);
+  M.used++;
+  M.dice=[a,b];
+  let msg='';
+  if(sc.v===1000){ M.mex++; msg=`MEX! 🔥 Slokken verdubbeld (nu ${Math.pow(2,M.mex)})`; }
+  else if(vaasje){ msg='VAASJE (31) — iedereen neemt een slok! 🍺'; }
+  else msg=`${M.names[M.idx]} gooit ${sc.d}`;
+  const canRethrow = M.used<M.maxT && sc.v!==1000;
+  setBanner('#mexBanner',msg, sc.v===1000?'good':(vaasje?'bad':''));
+  if(canRethrow){ $('#mexStay').style.display='block'; $('#mexRoll').textContent='🎲 Nog een keer'; }
+  else mexLock(sc);
+  mexRenderPlayers();
+}
+function mexStay(){ mexLock(mexScore(M.dice[0],M.dice[1])); }
+function mexLock(sc){
+  const p=M.names[M.idx];
+  M.locked[p]=sc;
+  if(M.idx===0) M.maxT=M.used;
+  M.idx++; M.used=0;
+  $('#mexStay').style.display='none'; $('#mexRoll').textContent='🎲 Gooi';
+  if(M.idx>=M.names.length) return mexResolve();
+  setBanner('#mexBanner',`${M.names[M.idx]} is aan de beurt — max ${M.maxT}×`,'');
+  mexRenderPlayers();
+}
+function mexResolve(){
+  const min=Math.min(...M.names.map(n=>M.locked[n].v));
+  const lows=M.names.filter(n=>M.locked[n].v===min);
+  if(lows.length>1){
+    M.phase='tie'; M.tieList=[...lows]; M.tieScores={};
+    setBanner('#mexBanner',`Gelijk laagste: ${lows.join(' & ')} — gooi om!`,'bad');
+    mexRenderPlayers();
+    return;
+  }
+  mexLoser(lows[0]);
+}
+function mexTieResult(sc){
+  const p=M.tieList.shift();
+  M.tieScores[p]=sc.v;
+  if(sc.v===1000) M.mex++;
+  setBanner('#mexBanner',`${p} gooit om: ${sc.d}`,'');
+  if(M.tieList.length===0){
+    const names=Object.keys(M.tieScores);
+    const min=Math.min(...names.map(n=>M.tieScores[n]));
+    const lows=names.filter(n=>M.tieScores[n]===min);
+    if(lows.length>1){ M.tieList=[...lows]; M.tieScores={}; setBanner('#mexBanner',`Wéér gelijk: ${lows.join(' & ')} — nog een keer!`,'bad'); }
+    else mexLoser(lows[0]);
+  }
+  mexRenderPlayers();
+}
+function mexLoser(p){
+  M.phase='done';
+  const n=Math.pow(2,M.mex);
+  setBanner('#mexBanner',`🍺 ${p} is de sjaak — drink ${n} ${n===1?'slok':'slokken'}!`,'bad');
+  $('#mexRoll').style.display='none'; $('#mexStay').style.display='none';
+  $('#mexNextRound').style.display='block';
+  const rows=M.names.map(x=>`<li><b>${x}</b>: ${M.locked[x]?M.locked[x].d:'-'}</li>`).join('');
+  const b=$('#mexBoard'); b.style.display='block';
+  b.innerHTML='<h3>Deze ronde</h3><ul>'+rows+'</ul>'+(M.mex?`<p class="note">${M.mex}× mex gegooid → slokken ×${n}</p>`:'');
+}
+
+/* ================= Tikkende Tijdbom ================= */
+const BM={durMin:20,durMax:60,running:false,start:0,end:0,tick:null,ctx:null};
+function bombDur(btn){
+  document.querySelectorAll('#bombDurSeg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const [a,b]=btn.dataset.d.split(',').map(Number);
+  BM.durMin=a; BM.durMax=b;
+}
+function bombAudio(){
+  try{
+    if(!BM.ctx) BM.ctx=new (window.AudioContext||window.webkitAudioContext)();
+    if(BM.ctx.state==='suspended') BM.ctx.resume();
+  }catch(e){}
+}
+function bombBeep(freq=880,dur=0.06,type='square',vol=0.25){
+  try{
+    if(!BM.ctx) return;
+    const o=BM.ctx.createOscillator(), g=BM.ctx.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,BM.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001,BM.ctx.currentTime+dur);
+    o.connect(g); g.connect(BM.ctx.destination);
+    o.start(); o.stop(BM.ctx.currentTime+dur);
+  }catch(e){}
+}
+function bombStart(again){
+  bombAudio();
+  BM.running=true;
+  BM.start=Date.now();
+  BM.end=BM.start+(BM.durMin+Math.random()*(BM.durMax-BM.durMin))*1000;
+  $('#bombCat').textContent=bagNext('bag.cat',CATEGORIES);
+  $('#bombBoom').style.display='none';
+  if(!again) go('bomb-game');
+  clearTimeout(BM.tick);
+  bombTickLoop();
+}
+function bombTickLoop(){
+  if(!BM.running) return;
+  const now=Date.now();
+  if(now>=BM.end) return bombBoomNow();
+  bombBeep();
+  const prog=(now-BM.start)/(BM.end-BM.start);
+  const base=700-560*prog;
+  BM.tick=setTimeout(bombTickLoop, Math.max(90,base*(0.85+Math.random()*0.3)));
+}
+function bombBoomNow(){
+  BM.running=false;
+  clearTimeout(BM.tick);
+  bombBeep(70,0.7,'sawtooth',0.6); bombBeep(45,0.9,'sawtooth',0.6);
+  try{ navigator.vibrate&&navigator.vibrate([400,80,400]); }catch(e){}
+  $('#bombBoom').style.display='flex';
+}
+function bombSkip(){ if(BM.running) $('#bombCat').textContent=bagNext('bag.cat',CATEGORIES); }
+function bombStop(){ BM.running=false; clearTimeout(BM.tick); $('#bombBoom').style.display='none'; }
+function bombAgain(){ bombStart(true); }
+function bombClose(){ bombStop(); go('bomb-setup'); }
+
+/* ================= Reactieduel ================= */
+const DU={phase:'idle',t:null,score:[0,0]};
+function duelOpen(){ duelReset(); go('duel-game'); }
+function duelReset(){
+  DU.phase='idle'; clearTimeout(DU.t); DU.score=[0,0];
+  duelZones('','Speler boven','Speler onder');
+  $('#duelScore').textContent='0 — 0';
+  $('#duelMid').textContent='Eén speler boven, één onder. Tik als het groen wordt — te vroeg is dubbel drinken.';
+  $('#duelStartBtn').style.display='block'; $('#duelStartBtn').textContent='Start ronde';
+}
+function duelZones(cls,ta,tb){
+  const a=$('#zoneA'), b=$('#zoneB');
+  a.className='zone top '+cls; b.className='zone '+cls;
+  a.textContent=ta; b.textContent=tb;
+}
+function duelStart(){
+  if(DU.phase!=='idle') return;
+  DU.phase='wait';
+  $('#duelStartBtn').style.display='none';
+  $('#duelMid').textContent='Wacht op groen…';
+  duelZones('armed','Wacht…','Wacht…');
+  DU.t=setTimeout(()=>{
+    DU.phase='go';
+    duelZones('go','TIK!','TIK!');
+  }, 2000+Math.random()*6000);
+}
+function duelTap(i){
+  if(DU.phase==='wait'){
+    clearTimeout(DU.t);
+    DU.phase='idle';
+    DU.score[1-i]++;
+    const a=$('#zoneA'), b=$('#zoneB');
+    (i===0?a:b).className='zone '+(i===0?'top ':'')+'lose';
+    (i===0?a:b).textContent='VALSE START — drink 2!';
+    (i===0?b:a).className='zone '+(i===0?'':'top ')+'win';
+    (i===0?b:a).textContent='Punt!';
+    duelAfter();
+  }else if(DU.phase==='go'){
+    DU.phase='idle';
+    DU.score[i]++;
+    const a=$('#zoneA'), b=$('#zoneB');
+    (i===0?a:b).className='zone '+(i===0?'top ':'')+'win';
+    (i===0?a:b).textContent='GEWONNEN!';
+    (i===0?b:a).className='zone '+(i===0?'':'top ')+'lose';
+    (i===0?b:a).textContent='Te laat — drink 1';
+    duelAfter();
+  }
+}
+function duelAfter(){
+  $('#duelScore').textContent=`${DU.score[0]} — ${DU.score[1]}`;
+  $('#duelMid').textContent='Boven '+DU.score[0]+' — '+DU.score[1]+' onder';
+  $('#duelStartBtn').style.display='block';
+  $('#duelStartBtn').textContent='Volgende ronde';
+}
+
+/* ================= Meest Waarschijnlijk ================= */
+const MW={sel:['basis'],cur:'',busy:false};
+function mwOpen(){
+  MW.sel=load('mw.sel',['basis']).filter(k=>MW_PACKS[k]);
+  if(!MW.sel.length) MW.sel=['basis'];
+  mwRenderPacks(); go('mw-setup');
+}
+function mwRenderPacks(){
+  $('#mwPacks').innerHTML=Object.entries(MW_PACKS).map(([id,p])=>
+    `<span class="chip packchip ${MW.sel.includes(id)?'on':''}" onclick="mwToggle('${id}')">${p.emoji} ${p.name} (${p.items.length})</span>`).join('');
+}
+function mwToggle(id){
+  if(MW.sel.includes(id)){ if(MW.sel.length>1) MW.sel=MW.sel.filter(x=>x!==id); }
+  else MW.sel.push(id);
+  store('mw.sel',MW.sel);
+  mwRenderPacks();
+}
+function mwPool(){ return MW.sel.slice().sort().flatMap(k=>MW_PACKS[k].items); }
+function mwStart(){ go('mw-game'); mwNext(); }
+function mwNext(){
+  const pool=mwPool();
+  MW.cur=bagNext('bag.mw.'+MW.sel.slice().sort().join('_'), pool);
+  $('#mwText').textContent=MW.cur;
+  $('#mwMeta').innerHTML=pool.length+' stellingen<br>in je packs';
+  $('#mwHint').style.display='none';
+  $('#mwCountBtn').style.display='block';
+  $('#mwNextBtn').style.display='none';
+}
+function mwCountdown(){
+  if(MW.busy) return;
+  MW.busy=true;
+  const ov=$('#mwCount');
+  const steps=['3','2','1','WIJS! 👉'];
+  let i=0;
+  ov.style.display='flex';
+  const step=()=>{
+    ov.textContent=steps[i];
+    ov.style.fontSize=(i===3)?'64px':'120px';
+    i++;
+    if(i<steps.length) setTimeout(step,650);
+    else setTimeout(()=>{
+      ov.style.display='none';
+      MW.busy=false;
+      $('#mwHint').style.display='flex';
+      $('#mwCountBtn').style.display='none';
+      $('#mwNextBtn').style.display='block';
+    },900);
+  };
+  step();
+}
 
 /* ================= PWA ================= */
 if('serviceWorker' in navigator){
