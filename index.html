@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Kantine — drankspellen zonder kaartset</title>
+<meta name="theme-color" content="#07231B">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --felt:#0E3B2E; --felt-deep:#07231B; --felt-soft:#14503E;
+  --stock:#F6F1E3; --amber:#E8A33D; --red:#C4363B;
+  --mist:#9DBFB0; --ink:#221F1A; --line:rgba(246,241,227,.16);
+  --slab:'Alfa Slab One', Georgia, 'Times New Roman', serif;
+  --sans:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0;}
+body{
+  background:
+    radial-gradient(120% 90% at 50% 0%, var(--felt) 0%, var(--felt-deep) 78%);
+  min-height:100vh; min-height:100dvh; color:var(--stock); font-family:var(--sans);
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overscroll-behavior:none;
+}
+.screen{display:none; max-width:460px; margin:0 auto; padding:14px 16px 28px; min-height:100vh; min-height:100dvh;}
+.screen.on{display:flex; flex-direction:column;}
+
+/* ---------- Home ---------- */
+.logo{font-family:var(--slab); color:var(--amber); font-size:clamp(38px,12vw,52px);
+  letter-spacing:.5px; margin:18px 0 2px; line-height:1;}
+.tagline{color:var(--mist); font-size:14px; margin-bottom:22px;}
+.tile{position:relative; overflow:hidden; width:100%; text-align:left; border:0; cursor:pointer;
+  background:linear-gradient(135deg, var(--felt-soft), var(--felt));
+  border-radius:18px; padding:20px 18px; margin-bottom:14px; color:var(--stock);
+  box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 0 0 1px var(--line);}
+.tile h2{font-family:var(--slab); font-weight:400; font-size:23px; margin:0 0 4px; letter-spacing:.3px;}
+.tile p{margin:0; color:var(--mist); font-size:13.5px; max-width:75%;}
+.tile .wm{position:absolute; right:-6px; bottom:-22px; font-size:96px; opacity:.14; line-height:1;}
+.tile:active{transform:scale(.985);}
+.homefoot{margin-top:auto; color:var(--mist); font-size:12px; text-align:center; opacity:.8;}
+
+/* ---------- Header in games ---------- */
+.top{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.back{background:none; border:1px solid var(--line); color:var(--stock); border-radius:10px;
+  width:40px; height:40px; font-size:20px; cursor:pointer; flex:0 0 auto;}
+.top h1{font-family:var(--slab); font-weight:400; font-size:19px; margin:0; letter-spacing:.3px; flex:1;}
+.top .meta{color:var(--mist); font-size:12px; text-align:right; line-height:1.3;}
+
+/* ---------- Buttons & inputs ---------- */
+.btn{border:0; border-radius:14px; padding:15px 18px; font-size:16px; font-weight:800;
+  letter-spacing:.4px; cursor:pointer; font-family:var(--sans);}
+.btn.primary{background:var(--amber); color:var(--ink); width:100%; box-shadow:0 4px 0 rgba(0,0,0,.3);}
+.btn.primary:active{transform:translateY(2px); box-shadow:0 2px 0 rgba(0,0,0,.3);}
+.btn.ghost{background:transparent; color:var(--stock); border:1px solid var(--line); width:100%;}
+.btn.small{padding:9px 12px; font-size:13.5px; width:auto; border-radius:10px;}
+.row{display:flex; gap:10px;}
+.row .btn{flex:1;}
+input[type=text], input[type=number], select{
+  background:rgba(0,0,0,.28); color:var(--stock); border:1px solid var(--line);
+  border-radius:10px; padding:12px; font-size:16px; width:100%; font-family:var(--sans);}
+label.fld{display:block; color:var(--mist); font-size:12.5px; margin:14px 0 6px; text-transform:uppercase; letter-spacing:.8px;}
+.seg{display:flex; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.seg button{flex:1; background:transparent; color:var(--mist); border:0; padding:11px 6px; font-size:13px; cursor:pointer;}
+.seg button.on{background:var(--amber); color:var(--ink); font-weight:800;}
+.note{color:var(--mist); font-size:12.5px; line-height:1.5; margin-top:8px;}
+
+/* ---------- Playing card ---------- */
+.cardstage{display:flex; justify-content:center; padding:8px 0; perspective:900px;}
+.flip{position:relative; width:min(60vw,225px); aspect-ratio:5/7;
+  transform-style:preserve-3d; transition:transform .45s cubic-bezier(.2,.7,.25,1);}
+.flip.shown{transform:rotateY(180deg);}
+.face{position:absolute; inset:0; backface-visibility:hidden; border-radius:16px;
+  box-shadow:0 10px 24px rgba(0,0,0,.45);}
+.face.front{transform:rotateY(180deg); background:var(--stock); color:var(--ink);}
+.face.back{
+  background:
+    repeating-linear-gradient(45deg, var(--felt-soft) 0 10px, var(--felt) 10px 20px);
+  border:7px solid var(--stock);}
+.face.back::after{content:'♠'; position:absolute; inset:0; display:grid; place-items:center;
+  color:var(--amber); font-size:54px; opacity:.9;}
+.pip{position:absolute; font-weight:800; line-height:1; text-align:center; font-size:clamp(20px,5.6vw,26px);}
+.pip small{display:block; font-size:.9em;}
+.pip.tl{top:10px; left:12px;}
+.pip.br{bottom:10px; right:12px; transform:rotate(180deg);}
+.suitbig{position:absolute; inset:0; display:grid; place-items:center; font-size:clamp(72px,24vw,104px);}
+.redsuit{color:var(--red);} .blacksuit{color:var(--ink);}
+.cardlabel{text-align:center; color:var(--mist); font-size:13px; min-height:18px;}
+
+/* ---------- Result banner ---------- */
+.banner{border-radius:14px; padding:14px 16px; text-align:center; margin:10px 0;
+  font-family:var(--slab); font-weight:400; font-size:19px; letter-spacing:.4px;
+  background:rgba(0,0,0,.3); border:1px solid var(--line); min-height:52px;
+  display:flex; align-items:center; justify-content:center;}
+.banner.good{background:var(--amber); color:var(--ink); border-color:var(--amber);}
+.banner.bad{background:var(--red); color:var(--stock); border-color:var(--red);}
+.banner.pop{animation:pop .3s ease;}
+@keyframes pop{0%{transform:scale(.92)} 60%{transform:scale(1.04)} 100%{transform:scale(1)}}
+
+/* ---------- FtD count bar ---------- */
+.countbar{display:grid; grid-template-columns:repeat(13,1fr); gap:3px; margin:8px 0 4px;}
+.cb{background:rgba(0,0,0,.3); border:1px solid var(--line); border-radius:7px;
+  padding:4px 0 5px; text-align:center;}
+.cb b{display:block; font-size:12.5px;}
+.cb .dots{display:flex; justify-content:center; gap:2px; margin-top:3px;}
+.cb .d{width:5px; height:5px; border-radius:50%; background:var(--amber);}
+.cb .d.off{background:rgba(246,241,227,.15);}
+.cb.empty{opacity:.32;}
+.cb.empty b{text-decoration:line-through;}
+
+/* ---------- FtD rank grid ---------- */
+.ranks{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:8px;}
+.rk{background:rgba(0,0,0,.3); border:1px solid var(--line); color:var(--stock);
+  border-radius:11px; padding:13px 0; font-size:16.5px; font-weight:800; cursor:pointer;}
+.rk:disabled{opacity:.22;}
+.rk:active:not(:disabled){background:var(--amber); color:var(--ink);}
+.streak{display:flex; gap:6px; align-items:center; justify-content:center; color:var(--mist); font-size:12.5px; margin-top:10px;}
+.streak .s{width:10px; height:10px; border-radius:50%; border:1px solid var(--line);}
+.streak .s.on{background:var(--amber); border-color:var(--amber);}
+
+/* ---------- Horse race ---------- */
+.sidecards{display:grid; gap:4px; margin-bottom:6px;}
+.sc{aspect-ratio:5/7; border-radius:6px; border:2px solid var(--stock);
+  background:repeating-linear-gradient(45deg, var(--felt-soft) 0 6px, var(--felt) 6px 12px);
+  display:grid; place-items:center; font-size:15px; font-weight:800; transition:transform .3s;}
+.sc.flipped{background:var(--stock);}
+.track{display:grid; gap:8px; background:rgba(0,0,0,.25); border:1px solid var(--line);
+  border-radius:14px; padding:12px 8px;}
+.lane{position:relative; height:46px; border-bottom:1px dashed rgba(246,241,227,.12);}
+.lane:last-child{border-bottom:0;}
+.horse{position:absolute; top:3px; left:0; width:40px; height:40px; border-radius:50%;
+  background:var(--stock); display:grid; place-items:center; font-size:22px;
+  box-shadow:0 3px 8px rgba(0,0,0,.4); transition:left .45s cubic-bezier(.2,.7,.25,1);}
+.finish{position:absolute; top:0; bottom:0; width:4px;
+  background:repeating-linear-gradient(0deg, var(--stock) 0 6px, var(--ink) 6px 12px); border-radius:2px;}
+.betrow{display:grid; grid-template-columns:1fr 74px 64px 36px; gap:8px; margin-bottom:8px; align-items:center;}
+.betrow button{background:none; border:1px solid var(--line); color:var(--mist); border-radius:9px; height:40px; cursor:pointer;}
+.drawncard{display:flex; align-items:center; justify-content:center; gap:10px; min-height:34px; color:var(--mist); font-size:14px;}
+.mini{display:inline-grid; place-items:center; width:30px; height:42px; border-radius:6px;
+  background:var(--stock); font-weight:800; font-size:14px;}
+
+/* ---------- Kingsen ---------- */
+.players{display:flex; flex-wrap:wrap; gap:7px; margin:6px 0;}
+.chip{background:rgba(0,0,0,.3); border:1px solid var(--line); color:var(--stock);
+  border-radius:999px; padding:8px 14px; font-size:14px; font-weight:700;}
+.chip.on{background:var(--amber); color:var(--ink); border-color:var(--amber);}
+.chip .x{margin-left:8px; opacity:.6;}
+.crowns{display:flex; gap:8px; justify-content:center; font-size:24px; margin:6px 0;}
+.crowns span{opacity:.25; filter:grayscale(1);}
+.crowns span.won{opacity:1; filter:none;}
+.panel{background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:12px;}
+.panel h3{margin:0 0 6px; font-size:12.5px; color:var(--mist); text-transform:uppercase; letter-spacing:.8px;}
+.panel ul{margin:0; padding-left:18px; font-size:14px; line-height:1.55;}
+.rulehidden{text-align:center;}
+.rule{background:rgba(0,0,0,.3); border:1px solid var(--line); border-radius:14px;
+  padding:14px; font-size:16px; line-height:1.5; text-align:center; margin-top:10px; min-height:56px;}
+details.reglist{margin-top:12px;}
+details.reglist summary{color:var(--amber); font-size:14px; cursor:pointer;}
+details.reglist ul{color:var(--stock); font-size:13.5px; line-height:1.6; padding-left:18px; margin:8px 0 0;}
+.editrow{margin:12px 0 14px;}
+.editrow .rowline{display:flex; gap:8px; align-items:center; margin-bottom:6px;}
+.editrow .rowline b{font-family:var(--slab); font-weight:400; width:30px; text-align:center; font-size:16px; flex:0 0 auto;}
+input.sm{padding:9px 10px; font-size:14px;}
+.chains div{display:flex; flex-wrap:wrap; gap:4px 8px; align-items:center; margin:5px 0;}
+.chains .arr{color:var(--amber); font-weight:800;}
+.spacer{flex:1;}
+.mt{margin-top:12px;} .mtl{margin-top:auto; padding-top:14px;}
+.center{text-align:center;}
+h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 4px;}
+
+@media (prefers-reduced-motion: reduce){
+  .flip{transition:none;} .horse{transition:none;} .banner.pop{animation:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HOME ================= -->
+<section class="screen on" id="home">
+  <div class="logo">KANTINE</div>
+  <div class="tagline">Drankspellen zonder kaartset — één telefoon is genoeg.</div>
+
+  <button class="tile" onclick="go('ftd-setup')">
+    <h2>Fuck the Dealer</h2>
+    <p>Gok de kaart. De telbalk laat zien wat er nog in het deck zit.</p>
+    <span class="wm">♠</span>
+  </button>
+  <button class="tile" onclick="go('race-setup')">
+    <h2>Paardenrace</h2>
+    <p>Vier azen racen. Zet slokken in op je paard.</p>
+    <span class="wm">♥</span>
+  </button>
+  <button class="tile" onclick="go('king-setup')">
+    <h2>Kingsen</h2>
+    <p>Trek een kaart, ken je regel. Spieken mag — met een tik.</p>
+    <span class="wm">♦</span>
+  </button>
+
+  <div class="homefoot">Zet op je beginscherm via ‘Delen → Zet op beginscherm’ (iPhone) of ‘Installeren’ (Android).</div>
+</section>
+
+<!-- ================= FTD SETUP ================= -->
+<section class="screen" id="ftd-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Fuck the Dealer</h1>
+  </div>
+  <label class="fld">Wie is de dealer?</label>
+  <div class="seg" id="ftdModeSeg">
+    <button class="on" data-mode="app" onclick="ftdMode(this)">Telefoon is dealer</button>
+    <button data-mode="dealer" onclick="ftdMode(this)">Ik ben dealer</button>
+  </div>
+  <p class="note" id="ftdModeNote">De telefoon ligt op tafel. De gokker tikt zijn gok in; niemand ziet de kaart tot de onthulling.</p>
+  <p class="note">Regels: raak in één keer = deel 4 uit · raak in twee keer (met hoger/lager-hint) = deel 2 uit · mis = drink het verschil. Na 3× raak op rij wisselt de dealer. Aas is hoog.</p>
+  <div class="mtl"><button class="btn primary" onclick="ftdStart()">Schudden en starten</button></div>
+</section>
+
+<!-- ================= FTD GAME ================= -->
+<section class="screen" id="ftd-game">
+  <div class="top">
+    <button class="back" onclick="go('ftd-setup')">‹</button>
+    <h1>Fuck the Dealer</h1>
+    <div class="meta"><span id="ftdLeft"></span> kaarten<br>over</div>
+  </div>
+  <div class="countbar" id="ftdBar"></div>
+  <div class="cardstage"><div class="flip" id="ftdFlip">
+    <div class="face back"></div>
+    <div class="face front" id="ftdFront"></div>
+  </div></div>
+  <div class="banner" id="ftdBanner">Gok de kaart</div>
+  <div class="ranks" id="ftdRanks"></div>
+  <div class="streak" id="ftdStreak"></div>
+  <div class="mtl"><button class="btn primary" id="ftdNext" onclick="ftdNext()" style="display:none">Volgende kaart</button></div>
+</section>
+
+<!-- ================= RACE SETUP ================= -->
+<section class="screen" id="race-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Paardenrace</h1>
+  </div>
+  <label class="fld">Baanlengte (zijkaarten)</label>
+  <div class="seg" id="raceLenSeg">
+    <button data-len="5" onclick="raceLen(this)">5</button>
+    <button class="on" data-len="6" onclick="raceLen(this)">6</button>
+    <button data-len="7" onclick="raceLen(this)">7</button>
+    <button data-len="8" onclick="raceLen(this)">8</button>
+  </div>
+  <label class="fld">Inzetten (optioneel)</label>
+  <div id="betList"></div>
+  <button class="btn ghost small" onclick="addBet()">+ inzet toevoegen</button>
+  <p class="note">Winnaars delen 2× hun inzet uit, verliezers drinken hun inzet zelf.</p>
+  <div class="mtl"><button class="btn primary" onclick="raceStart()">Naar de start</button></div>
+</section>
+
+<!-- ================= RACE GAME ================= -->
+<section class="screen" id="race-game">
+  <div class="top">
+    <button class="back" onclick="go('race-setup')">‹</button>
+    <h1>Paardenrace</h1>
+    <div class="meta" id="raceMeta"></div>
+  </div>
+  <div class="sidecards" id="raceSide"></div>
+  <div class="track" id="raceTrack"></div>
+  <div class="drawncard" id="raceDrawn">Tik op ‘Draai kaart’ om te starten</div>
+  <div class="banner" id="raceBanner" style="display:none"></div>
+  <div id="raceBets" class="panel" style="display:none"></div>
+  <div class="mtl">
+    <button class="btn primary" id="raceDraw" onclick="raceDraw()">Draai kaart</button>
+    <button class="btn ghost mt" id="raceAgain" onclick="go('race-setup')" style="display:none">Nieuwe race</button>
+  </div>
+</section>
+
+<!-- ================= KINGSEN SETUP ================= -->
+<section class="screen" id="king-setup">
+  <div class="top">
+    <button class="back" onclick="go('home')">‹</button>
+    <h1>Kingsen</h1>
+  </div>
+  <label class="fld">Spelers (in beurtvolgorde)</label>
+  <div class="players" id="kingChips"></div>
+  <div class="row">
+    <input type="text" id="kingName" placeholder="Naam" onkeydown="if(event.key==='Enter')kingAdd()">
+    <button class="btn ghost small" onclick="kingAdd()" style="flex:0 0 auto">Voeg toe</button>
+  </div>
+  <label class="fld">Regels tonen</label>
+  <div class="seg" id="kingHintSeg">
+    <button data-h="tik" class="on" onclick="kingHint(this)">Na een tik</button>
+    <button data-h="direct" onclick="kingHint(this)">Direct</button>
+    <button data-h="uit" onclick="kingHint(this)">Nooit</button>
+  </div>
+  <p class="note">‘Na een tik’ is de middenweg: je moet 'm zelf weten, maar spieken kan — en iedereen ziet dát je spiekt.</p>
+  <details class="reglist"><summary>Regels bekijken &amp; aanpassen</summary>
+    <p class="note">Dit is ook meteen de opfrislijst — alleen hier zichtbaar, niet tijdens het spel. Pas de tekst aan naar jullie huisregels; <b>{p}</b> wordt vervangen door de naam van de trekker.</p>
+    <div id="kingEdit"></div>
+    <button class="btn ghost small mt" onclick="kingResetRules()">Herstel standaardregels</button>
+  </details>
+  <div class="mtl"><button class="btn primary" onclick="kingStart()">Starten</button></div>
+</section>
+
+<!-- ================= KINGSEN GAME ================= -->
+<section class="screen" id="king-game">
+  <div class="top">
+    <button class="back" onclick="go('king-setup')">‹</button>
+    <h1>Kingsen</h1>
+    <div class="meta"><span id="kingLeft"></span> kaarten<br>over</div>
+  </div>
+  <div class="crowns" id="kingCrowns"><span>👑</span><span>👑</span><span>👑</span><span>👑</span></div>
+  <div class="players" id="kingTurn"></div>
+  <div class="cardstage"><div class="flip" id="kingFlip">
+    <div class="face back"></div>
+    <div class="face front" id="kingFront"></div>
+  </div></div>
+  <div class="rulehidden" id="kingRuleArea"></div>
+  <div class="panel" id="kingActive" style="display:none"></div>
+  <div class="mtl">
+    <button class="btn primary" id="kingDrawBtn" onclick="kingDraw()">Trek kaart</button>
+    <button class="btn primary" id="kingNextBtn" onclick="kingNextTurn()" style="display:none">Volgende speler</button>
+  </div>
+</section>
+
+<script>
+/* ================= Gedeeld ================= */
+const $=(q,el=document)=>el.querySelector(q);
+const RANKS=[{l:'2',v:2},{l:'3',v:3},{l:'4',v:4},{l:'5',v:5},{l:'6',v:6},{l:'7',v:7},{l:'8',v:8},{l:'9',v:9},{l:'10',v:10},{l:'B',v:11},{l:'V',v:12},{l:'H',v:13},{l:'A',v:14}];
+const SUITS=[{s:'♠',c:'black'},{s:'♥',c:'red'},{s:'♦',c:'red'},{s:'♣',c:'black'}];
+
+function makeDeck(withAces=true){
+  const d=[];
+  for(const su of SUITS) for(const r of RANKS){
+    if(!withAces && r.v===14) continue;
+    d.push({l:r.l,v:r.v,s:su.s,c:su.c});
+  }
+  return shuffle(d);
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function faceHTML(card){
+  const cls=card.c==='red'?'redsuit':'blacksuit';
+  return `<div class="pip tl ${cls}">${card.l}<small>${card.s}</small></div>
+          <div class="suitbig ${cls}">${card.s}</div>
+          <div class="pip br ${cls}">${card.l}<small>${card.s}</small></div>`;
+}
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $('#'+id).classList.add('on');
+  window.scrollTo(0,0);
+  if(id!=='home') keepAwake();
+}
+let wakeLock=null;
+async function keepAwake(){
+  try{ wakeLock=await navigator.wakeLock?.request('screen'); }catch(e){}
+}
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&wakeLock) keepAwake(); });
+
+/* ================= Fuck the Dealer ================= */
+const F={mode:'app',deck:[],counts:{},cur:null,phase:'g1',g1:0,streak:0};
+
+function ftdMode(btn){
+  document.querySelectorAll('#ftdModeSeg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); F.mode=btn.dataset.mode;
+  $('#ftdModeNote').textContent = F.mode==='app'
+    ? 'De telefoon ligt op tafel. De gokker tikt zijn gok in; niemand ziet de kaart tot de onthulling.'
+    : 'Jij houdt de telefoon vast en ziet de kaart. De ander gokt hardop — jij tikt zijn gok in.';
+}
+function ftdStart(){
+  F.deck=makeDeck(); F.counts={}; RANKS.forEach(r=>F.counts[r.v]=4);
+  F.streak=0; go('ftd-game'); ftdRenderBar(); ftdRenderStreak(); ftdDeal();
+}
+function ftdDeal(){
+  F.cur=F.deck.pop(); F.phase='g1';
+  $('#ftdLeft').textContent=F.deck.length+1;
+  $('#ftdNext').style.display='none';
+  const flip=$('#ftdFlip'); flip.classList.remove('shown');
+  setTimeout(()=>{
+    $('#ftdFront').innerHTML=faceHTML(F.cur);
+    if(F.mode==='dealer'){ flip.classList.add('shown'); setBanner('#ftdBanner','Hij gokt hardop — tik zijn gok in',''); }
+    else setBanner('#ftdBanner','Gok de kaart','');
+    ftdRenderRanks(()=>false);
+  },280);
+}
+function ftdRenderBar(){
+  $('#ftdBar').innerHTML=RANKS.map(r=>{
+    const n=F.counts[r.v];
+    const dots=[0,1,2,3].map(i=>`<span class="d ${i<n?'':'off'}"></span>`).join('');
+    return `<div class="cb ${n===0?'empty':''}"><b>${r.l}</b><div class="dots">${dots}</div></div>`;
+  }).join('');
+}
+function ftdRenderRanks(disabledFn){
+  $('#ftdRanks').innerHTML=RANKS.map(r=>
+    `<button class="rk" ${disabledFn(r.v)?'disabled':''} onclick="ftdGuess(${r.v})">${r.l}</button>`).join('');
+}
+function ftdRenderStreak(){
+  $('#ftdStreak').innerHTML='Raak-streak: '+[0,1,2].map(i=>`<span class="s ${i<F.streak?'on':''}"></span>`).join('')+' <span>(3× = dealer wisselt)</span>';
+}
+function ftdGuess(v){
+  if(F.phase==='g1'){
+    if(v===F.cur.v) return ftdResolve(true,4);
+    F.g1=v; F.phase='g2';
+    const higher=F.cur.v>v;
+    setBanner('#ftdBanner', F.mode==='dealer' ? (higher?'Zeg: HOGER':'Zeg: LAGER') : (higher?'HOGER ↑':'LAGER ↓'),'');
+    ftdRenderRanks(rv=> higher ? rv<=v : rv>=v );
+  }else{
+    if(v===F.cur.v) return ftdResolve(true,2);
+    ftdResolve(false,Math.abs(F.cur.v-v));
+  }
+}
+function ftdResolve(good,n){
+  $('#ftdFlip').classList.add('shown');
+  F.counts[F.cur.v]--; ftdRenderBar();
+  ftdRenderRanks(()=>true);
+  let msg;
+  if(good){
+    F.streak++;
+    msg=`RAAK — deel ${n} uit!`;
+    if(F.streak>=3){ msg+=' · 3 op rij: dealer wisselt!'; F.streak=0; }
+  }else{
+    F.streak=0;
+    msg = F.mode==='dealer' ? `MIS — hij drinkt ${n} ${n===1?'slok':'slokken'}` : `MIS — drink ${n} ${n===1?'slok':'slokken'}`;
+  }
+  ftdRenderStreak();
+  setBanner('#ftdBanner',msg,good?'good':'bad');
+  const btn=$('#ftdNext'); btn.style.display='block';
+  if(F.deck.length===0){ btn.textContent='Deck is leeg — opnieuw schudden'; btn.onclick=ftdStart; }
+  else{ btn.textContent='Volgende kaart'; btn.onclick=ftdDeal; }
+}
+function ftdNext(){}
+function setBanner(sel,txt,mood){
+  const b=$(sel); b.textContent=txt;
+  b.className='banner '+(mood||'');
+  void b.offsetWidth; b.classList.add('pop');
+}
+
+/* ================= Paardenrace ================= */
+const R={len:6,bets:[],deck:[],used:[],pos:{},side:[],over:false,anim:false};
+
+function raceLen(btn){
+  document.querySelectorAll('#raceLenSeg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); R.len=parseInt(btn.dataset.len);
+}
+function addBet(){
+  const div=document.createElement('div'); div.className='betrow';
+  div.innerHTML=`<input type="text" placeholder="Naam">
+    <select>${SUITS.map(s=>`<option>${s.s}</option>`).join('')}</select>
+    <input type="number" value="2" min="1" max="20">
+    <button onclick="this.parentNode.remove()">✕</button>`;
+  $('#betList').appendChild(div);
+}
+function raceStart(){
+  R.bets=[...document.querySelectorAll('#betList .betrow')].map(r=>({
+    name:r.children[0].value.trim(), suit:r.children[1].value, n:parseInt(r.children[2].value)||1
+  })).filter(b=>b.name);
+  R.deck=makeDeck(false); R.used=[]; R.over=false; R.anim=false;
+  R.pos={'♠':0,'♥':0,'♦':0,'♣':0};
+  R.side=R.deck.splice(0,R.len).map(c=>({card:c,flipped:false}));
+  go('race-game');
+  $('#raceBanner').style.display='none'; $('#raceBets').style.display='none';
+  $('#raceDraw').style.display='block'; $('#raceAgain').style.display='none';
+  $('#raceDrawn').textContent='Tik op ‘Draai kaart’ om te starten';
+  raceRender();
+}
+function raceRender(){
+  $('#raceMeta').innerHTML=(R.deck.length)+' kaarten<br>in het deck';
+  const cols=R.len+2;
+  const sideEl=$('#raceSide');
+  sideEl.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  sideEl.innerHTML='<div></div>'+R.side.map(sc=>{
+    const cls=sc.card.c==='red'?'redsuit':'blacksuit';
+    return `<div class="sc ${sc.flipped?'flipped':''}">${sc.flipped?`<span class="${cls}">${sc.card.l}${sc.card.s}</span>`:''}</div>`;
+  }).join('')+'<div style="display:grid;place-items:center">🏁</div>';
+  const track=$('#raceTrack');
+  track.innerHTML=SUITS.map(su=>{
+    const cls=su.c==='red'?'redsuit':'blacksuit';
+    return `<div class="lane"><div class="horse" id="h${su.s.codePointAt(0)}"><span class="${cls}">${su.s}</span></div></div>`;
+  }).join('');
+  requestAnimationFrame(raceLayout);
+}
+function raceLayout(){
+  const lane=$('.lane'); if(!lane) return;
+  const W=lane.clientWidth, hw=40, steps=R.len+1;
+  for(const su of SUITS){
+    const el=$('#h'+su.s.codePointAt(0));
+    el.style.left=(Math.min(R.pos[su.s],steps)/steps*(W-hw))+'px';
+  }
+}
+window.addEventListener('resize',raceLayout);
+function raceDraw(){
+  if(R.over||R.anim) return;
+  if(R.deck.length===0){ R.deck=shuffle(R.used); R.used=[]; }
+  const c=R.deck.pop(); R.used.push(c);
+  R.pos[c.s]++;
+  const cls=c.c==='red'?'redsuit':'blacksuit';
+  $('#raceDrawn').innerHTML=`<span class="mini"><span class="${cls}">${c.l}${c.s}</span></span> → ${c.s} loopt een stap`;
+  $('#raceMeta').innerHTML=(R.deck.length)+' kaarten<br>in het deck';
+  raceLayout();
+  raceAfterMove();
+}
+function raceAfterMove(){
+  const steps=R.len+1;
+  const winner=SUITS.find(su=>R.pos[su.s]>=steps);
+  if(winner) return raceFinish(winner);
+  const minPos=Math.min(...SUITS.map(su=>R.pos[su.s]));
+  const k=R.side.findIndex(sc=>!sc.flipped);
+  if(k>-1 && minPos>=k+1){
+    R.anim=true;
+    setTimeout(()=>{
+      const sc=R.side[k]; sc.flipped=true;
+      R.pos[sc.card.s]=Math.max(0,R.pos[sc.card.s]-1);
+      const cls=sc.card.c==='red'?'redsuit':'blacksuit';
+      $('#raceDrawn').innerHTML=`Zijkaart <span class="mini"><span class="${cls}">${sc.card.l}${sc.card.s}</span></span> — ${sc.card.s} stapt terug!`;
+      raceRender(); R.anim=false;
+      raceAfterMove();
+    },600);
+  }
+}
+function raceFinish(winner){
+  R.over=true; raceLayout();
+  const b=$('#raceBanner'); b.style.display='flex';
+  setBanner('#raceBanner',`${winner.s} WINT DE RACE!`,'good');
+  $('#raceDraw').style.display='none'; $('#raceAgain').style.display='block';
+  if(R.bets.length){
+    const rows=R.bets.map(bet=> bet.suit===winner.s
+      ? `<li><b>${bet.name}</b> wint — deelt ${bet.n*2} slokken uit 🍻</li>`
+      : `<li><b>${bet.name}</b> verliest — drinkt ${bet.n} ${bet.n===1?'slok':'slokken'}</li>`).join('');
+    const p=$('#raceBets'); p.style.display='block';
+    p.innerHTML='<h3>Uitbetaling</h3><ul>'+rows+'</ul>';
+  }
+}
+
+/* ================= Kingsen ================= */
+const K={names:[],hint:'tik',deck:[],idx:0,kings:0,thumb:null,qm:null,rules:[],links:{},cur:null,over:false,revealed:false,def:null};
+const KRULES={
+  2:['Uitdelen','Geef 2 slokken aan wie je wil.'],
+  3:['Zelf drinken','Neem zelf 3 slokken.'],
+  4:['Vloer','Laatste die de vloer aanraakt, drinkt.'],
+  5:['Duimmeester','{p} is nu duimmeester. Legt {p} onopvallend een duim op tafel, dan drinkt de laatste die volgt.'],
+  6:['Mannen','Alle mannen drinken.'],
+  7:['Heaven','Laatste die omhoog wijst, drinkt.'],
+  8:['Maatje','{p} kiest een maatje — die drinkt vanaf nu elke keer met {p} mee.'],
+  9:['Rijmen','{p} zegt een woord, de rest rijmt de kring rond. Wie vastloopt of twijfelt, drinkt.'],
+  10:['Categorieën','{p} kiest een categorie (bijv. biermerken). Wie niks meer weet, drinkt.'],
+  11:['Regel','{p} bedenkt een nieuwe regel. Overtreden = drinken.'],
+  12:['Vragenmeester','{p} is vragenmeester. Geef je antwoord op een vraag van {p}? Drinken.'],
+  13:['Koning','Schenk wat van je drankje in de middenbeker. De 4e koning drinkt hem leeg!'],
+  14:['Waterval','Iedereen begint tegelijk met drinken. Je mag pas stoppen als je buurman vóór je stopt — {p} bepaalt zelf.']
+};
+K.def=JSON.parse(JSON.stringify(KRULES));
+function esc(s){return s.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');}
+function kingEditRule(v,f,val){ if(f==='t') K.def[v][0]=val; else K.def[v][1]=val; }
+function kingResetRules(){ K.def=JSON.parse(JSON.stringify(KRULES)); kingRenderEdit(); }
+function kingRenderEdit(){
+  $('#kingEdit').innerHTML=Object.keys(KRULES).map(v=>{
+    const r=RANKS.find(x=>x.v==v);
+    return `<div class="editrow">
+      <div class="rowline"><b>${r.l}</b><input class="sm" type="text" value="${esc(K.def[v][0])}" oninput="kingEditRule(${v},'t',this.value)"></div>
+      <input class="sm" type="text" value="${esc(K.def[v][1])}" oninput="kingEditRule(${v},'d',this.value)">
+    </div>`;
+  }).join('');
+}
+function kingAdd(){
+  const inp=$('#kingName'); const n=inp.value.trim();
+  if(!n) return;
+  K.names.push(n); inp.value=''; inp.focus(); kingRenderSetup();
+}
+function kingRemove(i){ K.names.splice(i,1); kingRenderSetup(); }
+function kingRenderSetup(){
+  $('#kingChips').innerHTML=K.names.map((n,i)=>`<span class="chip">${n}<span class="x" onclick="kingRemove(${i})">✕</span></span>`).join('');
+}
+function kingHint(btn){
+  document.querySelectorAll('#kingHintSeg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on'); K.hint=btn.dataset.h;
+}
+function kingStart(){
+  if(K.names.length<2){ $('#kingName').placeholder='Minstens 2 spelers…'; $('#kingName').focus(); return; }
+  K.deck=makeDeck(); K.idx=0; K.kings=0; K.thumb=null; K.qm=null; K.rules=[]; K.links={}; K.over=false;
+  go('king-game'); kingRenderState();
+  $('#kingFlip').classList.remove('shown');
+  $('#kingRuleArea').innerHTML='';
+  $('#kingDrawBtn').style.display='block'; $('#kingDrawBtn').textContent='Trek kaart';
+  $('#kingNextBtn').style.display='none';
+}
+function kingRenderState(){
+  $('#kingLeft').textContent=K.deck.length;
+  document.querySelectorAll('#kingCrowns span').forEach((s,i)=>s.classList.toggle('won',i<K.kings));
+  $('#kingTurn').innerHTML=K.names.map((n,i)=>{
+    let badge='';
+    if(K.thumb===n) badge+=' 👍';
+    if(K.qm===n) badge+=' ❓';
+    return `<span class="chip ${i===K.idx?'on':''}">${n}${badge}</span>`;
+  }).join('');
+  const p=$('#kingActive');
+  let html='';
+  const chains=kingChains();
+  if(chains.length){
+    html+='<h3>Maatjes-ketting 🔗</h3><div class="chains">'+chains.map(ch=>
+      '<div>'+ch.map((n,i)=>(i?'<span class="arr">→</span>':'')+(n==='↺'?'<span class="arr">↺</span>':'<span class="chip">'+n+'</span>')).join('')+'</div>').join('')+'</div>';
+  }
+  if(K.rules.length){ html+='<h3 class="mt">Huisregels (boer)</h3><ul>'+K.rules.map(r=>`<li>${r}</li>`).join('')+'</ul>'; }
+  if(html){ p.style.display='block'; p.innerHTML=html; } else p.style.display='none';
+}
+function kingChains(){
+  const linked=new Set();
+  Object.entries(K.links).forEach(([a,b])=>{ linked.add(a); linked.add(b); });
+  if(!linked.size) return [];
+  const hasIncoming=new Set(Object.values(K.links));
+  const seen=new Set(); const out=[];
+  const walk=(start)=>{
+    const ch=[start]; seen.add(start);
+    let cur=K.links[start];
+    while(cur && !seen.has(cur)){ ch.push(cur); seen.add(cur); cur=K.links[cur]; }
+    if(cur && cur===ch[0]) ch.push('↺');
+    return ch;
+  };
+  [...linked].filter(n=>!hasIncoming.has(n)).forEach(n=>out.push(walk(n)));
+  [...linked].filter(n=>!seen.has(n)).forEach(n=>out.push(walk(n)));
+  return out;
+}
+function kingDraw(){
+  if(K.over) return;
+  K.cur=K.deck.pop();
+  const p=K.names[K.idx];
+  if(K.cur.v===13) K.kings++;
+  if(K.cur.v===5) K.thumb=p;
+  if(K.cur.v===12) K.qm=p;
+  $('#kingFront').innerHTML=faceHTML(K.cur);
+  $('#kingFlip').classList.add('shown');
+  $('#kingDrawBtn').style.display='none';
+  $('#kingNextBtn').style.display='block';
+  kingRenderState();
+  const area=$('#kingRuleArea');
+  if(K.cur.v===13 && K.kings===4){
+    K.over=true;
+    area.innerHTML=`<div class="banner bad pop">VIERDE KONING — ${p} drinkt de middenbeker! 👑</div>`;
+    $('#kingNextBtn').textContent='Opnieuw spelen';
+    $('#kingNextBtn').onclick=()=>{ $('#kingNextBtn').onclick=kingNextTurn; $('#kingNextBtn').textContent='Volgende speler'; go('king-setup'); };
+    return;
+  }
+  K.revealed=(K.hint==='direct');
+  kingRefreshArea();
+}
+function kingRuleHTML(){
+  const p=K.names[K.idx];
+  const [t,d]=K.def[K.cur.v];
+  let html=`<div class="rule"><b>${K.cur.l} — ${t}.</b><br>${d.replaceAll('{p}','<b>'+p+'</b>')}</div>`;
+  if(K.cur.v===11) html+=`<input type="text" id="kingNewRule" class="mt" placeholder="Nieuwe regel (optioneel, wordt onthouden)">`;
+  return html;
+}
+function kingShowRule(){ K.revealed=true; kingRefreshArea(); }
+function kingRefreshArea(){
+  const p=K.names[K.idx];
+  let html='';
+  if(K.revealed) html=kingRuleHTML();
+  else if(K.hint==='tik') html=`<button class="btn ghost mt" onclick="kingShowRule()">🫣 Toon regel (spieken)</button>`;
+  else html=`<p class="note center mt">Jullie weten hem zelf.</p>`;
+  if(K.cur && K.cur.v===8 && !K.over) html+=kingMatePickerHTML(p);
+  $('#kingRuleArea').innerHTML=html;
+}
+function kingMatePickerHTML(p){
+  const opts=K.names.filter(n=>n!==p).map(n=>
+    `<span class="chip ${K.links[p]===n?'on':''}" onclick="kingPickMate('${n.replaceAll("'","\\'")}')">${n}</span>`).join('');
+  return `<div class="rule mt"><b>${p}</b> kiest een maatje 🔗</div><div class="players" style="justify-content:center">${opts}</div>`;
+}
+function kingPickMate(n){
+  K.links[K.names[K.idx]]=n;
+  kingRenderState(); kingRefreshArea();
+}
+function kingNextTurn(){
+  const nr=$('#kingNewRule');
+  if(nr && nr.value.trim()){ K.rules.push(nr.value.trim()); }
+  if(K.deck.length===0){
+    $('#kingRuleArea').innerHTML='<div class="banner">Deck is leeg — einde spel!</div>';
+    $('#kingNextBtn').textContent='Opnieuw spelen';
+    $('#kingNextBtn').onclick=()=>{ $('#kingNextBtn').onclick=kingNextTurn; $('#kingNextBtn').textContent='Volgende speler'; go('king-setup'); };
+    return;
+  }
+  K.idx=(K.idx+1)%K.names.length;
+  $('#kingFlip').classList.remove('shown');
+  setTimeout(()=>{ $('#kingRuleArea').innerHTML=''; },240);
+  $('#kingDrawBtn').style.display='block';
+  $('#kingNextBtn').style.display='none';
+  kingRenderState();
+}
+kingRenderEdit();
+addBet();
+
+/* ================= PWA ================= */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+</script>
+</body>
+</html>
