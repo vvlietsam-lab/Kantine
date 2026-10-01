@@ -1,5 +1,5 @@
 /* Kantine service worker — cache-first, alleen eigen cache */
-const CACHE = 'kantine-v6';
+const CACHE = 'kantine-v7';
 const ASSETS = ['./', './index.html', './content.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {

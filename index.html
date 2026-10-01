@@ -11,20 +11,24 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@500;600;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --felt:#0E3B2E; --felt-deep:#07231B; --felt-soft:#14503E;
   --stock:#F6F1E3; --amber:#E8A33D; --red:#C4363B;
-  --mist:#9DBFB0; --ink:#221F1A; --line:rgba(246,241,227,.16);
+  --mist:#9DBFB0; --ink:#1E1A16; --line:rgba(246,241,227,.16);
+  --board:#E6D7BA; --board-edge:#D4C29F; --brick:#B8352E; --cobalt:#24508F;
   --slab:'Alfa Slab One', Georgia, 'Times New Roman', serif;
-  --sans:system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --sans:'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation;}
 html,body{margin:0; padding:0;}
+html{background:var(--felt-deep);}
 body{
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),
     radial-gradient(120% 90% at 50% 0%, var(--felt) 0%, var(--felt-deep) 78%);
+
   min-height:100vh; min-height:100dvh; color:var(--stock); font-family:var(--sans);
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   overscroll-behavior:none;
@@ -36,19 +40,7 @@ input,textarea{-webkit-user-select:text; user-select:text;}
   min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));}
 .screen.on{display:flex; flex-direction:column;}
 
-/* ---------- Home ---------- */
-.logo{font-family:var(--slab); color:var(--amber); font-size:clamp(38px,12vw,52px);
-  letter-spacing:.5px; margin:18px 0 2px; line-height:1;}
-.tagline{color:var(--mist); font-size:14px; margin-bottom:22px;}
-.tile{position:relative; overflow:hidden; width:100%; text-align:left; border:0; cursor:pointer;
-  background:linear-gradient(135deg, var(--felt-soft), var(--felt));
-  border-radius:18px; padding:20px 18px; margin-bottom:14px; color:var(--stock);
-  box-shadow:0 6px 18px rgba(0,0,0,.35), inset 0 0 0 1px var(--line);}
-.tile h2{font-family:var(--slab); font-weight:400; font-size:23px; margin:0 0 4px; letter-spacing:.3px;}
-.tile p{margin:0; color:var(--mist); font-size:13.5px; max-width:75%;}
-.tile .wm{position:absolute; right:-6px; bottom:-22px; font-size:96px; opacity:.14; line-height:1;}
-.tile:active{transform:scale(.985);}
-.homefoot{margin-top:auto; color:var(--mist); font-size:12px; text-align:center; opacity:.8;}
+/* ---------- Home: zie blok 'Bierviltjes' onderaan ---------- */
 
 /* ---------- Header in games ---------- */
 .top{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
@@ -69,7 +61,7 @@ input,textarea{-webkit-user-select:text; user-select:text;}
 input[type=text], input[type=number], select{
   background:rgba(0,0,0,.28); color:var(--stock); border:1px solid var(--line);
   border-radius:10px; padding:12px; font-size:16px; width:100%; font-family:var(--sans);}
-label.fld{display:block; color:var(--mist); font-size:12.5px; margin:14px 0 6px; text-transform:uppercase; letter-spacing:.8px;}
+label.fld{display:block; color:var(--stock); font-size:15px; font-weight:600; margin:18px 0 8px;}
 .seg{display:flex; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
 .seg button{flex:1; background:transparent; color:var(--mist); border:0; padding:11px 6px; font-size:13px; cursor:pointer;}
 .seg button.on{background:var(--amber); color:var(--ink); font-weight:800;}
@@ -108,18 +100,18 @@ label.fld{display:block; color:var(--mist); font-size:12.5px; margin:14px 0 6px;
 @keyframes pop{0%{transform:scale(.92)} 60%{transform:scale(1.04)} 100%{transform:scale(1)}}
 
 /* ---------- FtD count bar ---------- */
-.countbar{display:grid; grid-template-columns:repeat(13,1fr); gap:3px; margin:8px 0 4px;}
+.countbar{display:grid; grid-template-columns:repeat(13,minmax(0,1fr)); gap:3px; margin:8px 0 4px;}
 .cb{background:rgba(0,0,0,.3); border:1px solid var(--line); border-radius:7px;
   padding:4px 0 5px; text-align:center;}
-.cb b{display:block; font-size:12.5px;}
+.cb b{display:block; font-size:clamp(11px,3.2vw,13px);}
 .cb .dots{display:flex; justify-content:center; gap:2px; margin-top:3px;}
-.cb .d{width:5px; height:5px; border-radius:50%; background:var(--amber);}
+.cb .d{width:4px; height:4px; border-radius:50%; background:var(--amber);}
 .cb .d.off{background:rgba(246,241,227,.15);}
 .cb.empty{opacity:.32;}
 .cb.empty b{text-decoration:line-through;}
 
 /* ---------- FtD rank grid ---------- */
-.ranks{display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:8px;}
+.ranks{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px; margin-top:8px;}
 .rk{background:rgba(0,0,0,.3); border:1px solid var(--line); color:var(--stock);
   border-radius:11px; padding:13px 0; font-size:16.5px; font-weight:800; cursor:pointer;}
 .rk:disabled{opacity:.22;}
@@ -159,7 +151,7 @@ label.fld{display:block; color:var(--mist); font-size:12.5px; margin:14px 0 6px;
 .crowns span{opacity:.25; filter:grayscale(1);}
 .crowns span.won{opacity:1; filter:none;}
 .panel{background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:14px; padding:12px 14px; margin-top:12px;}
-.panel h3{margin:0 0 6px; font-size:12.5px; color:var(--mist); text-transform:uppercase; letter-spacing:.8px;}
+.panel h3{margin:0 0 8px; font-family:var(--slab); font-weight:400; font-size:16px; color:var(--amber);}
 .panel ul{margin:0; padding-left:18px; font-size:14px; line-height:1.55;}
 .rulehidden{text-align:center;}
 .rule{background:rgba(0,0,0,.3); border:1px solid var(--line); border-radius:14px;
@@ -177,12 +169,6 @@ input.sm{padding:9px 10px; font-size:14px;}
 .mt{margin-top:12px;} .mtl{margin-top:auto; padding-top:14px;}
 .center{text-align:center;}
 h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 4px;}
-
-.tilegrid{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
-.tilegrid .tile{margin:0; padding:15px 13px; border-radius:16px; min-height:106px;}
-.tilegrid .tile h2{font-size:16.5px;}
-.tilegrid .tile p{font-size:11.5px; max-width:100%;}
-.tilegrid .tile .wm{font-size:60px; right:-8px; bottom:-12px;}
 
 .scard .suitbig{font-size:clamp(44px,14vw,60px);}
 .scard .pip{font-size:clamp(14px,4vw,18px);}
@@ -223,6 +209,113 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
 #mwCount{position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
   background:rgba(7,35,27,.92); font-family:var(--slab); font-size:120px; color:var(--amber);}
 
+
+/* ================= Bierviltjes (home) ================= */
+#home{padding-bottom:28px;}
+.hhead{padding:22px 4px 6px;}
+.logo{font-family:var(--slab); font-weight:400; color:var(--amber); margin:0; line-height:.9;
+  font-size:clamp(54px,17vw,76px); letter-spacing:-.5px;
+  text-shadow:0 3px 0 #7a4f12, 0 10px 24px rgba(0,0,0,.45);}
+.tagline{color:var(--mist); font-size:16px; margin:10px 0 0;}
+.hsect{font-family:var(--slab); font-weight:400; font-size:18px; color:var(--stock); margin:26px 4px 12px;}
+
+.table-roster{margin-top:4px;}
+.table-roster .hsect{margin-top:18px;}
+.addrow{display:flex; gap:8px; margin-top:8px;}
+.addrow input{flex:1;}
+.addbtn{flex:0 0 48px; height:48px; border-radius:50%; border:0; background:var(--amber); color:var(--ink);
+  font-size:26px; font-weight:800; line-height:1; cursor:pointer;}
+#homeChips:empty::before{content:'Nog niemand. Zet hier één keer de namen neer; alle spellen gebruiken ze.';
+  color:var(--mist); font-size:14px;}
+
+.coasters{display:grid; gap:14px 12px; padding:0 4px;}
+.coasters.c2{padding:0 10px; gap:16px 18px;}
+.coasters.c2{grid-template-columns:repeat(2,minmax(0,1fr));}
+.coasters.c3{grid-template-columns:repeat(3,minmax(0,1fr));}
+
+.coaster{position:relative; aspect-ratio:1; border:0; cursor:pointer; padding:0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  color:var(--ink); font-family:var(--sans);
+  /* geperst karton: lichte vlekjes, een rand die net donkerder is */
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.35), transparent 55%),
+    radial-gradient(circle at 70% 80%, rgba(120,90,40,.12), transparent 60%),
+    var(--board);
+  box-shadow: inset 0 0 0 2px var(--board-edge), 0 2px 0 rgba(0,0,0,.25), 0 10px 18px rgba(0,0,0,.4);
+  transform:rotate(var(--tilt,0deg));
+  transition:transform .5s cubic-bezier(.3,.7,.2,1);}
+.coaster.round{border-radius:50%;}
+.coaster.square{border-radius:16%;}
+.coaster .ring{position:absolute; inset:7%; border:2.5px solid var(--print); border-radius:inherit; pointer-events:none;}
+.coaster .ring::after{content:''; position:absolute; inset:5px; border:1.5px dashed var(--print); border-radius:inherit; opacity:.55;}
+.coaster.brick{--print:var(--brick);}
+.coaster.cobalt{--print:var(--cobalt);}
+.coaster.amber{--print:#B5741A;}
+
+.coaster .glyph{font-size:clamp(30px,10vw,42px); line-height:1; color:var(--ink); margin-bottom:2px;}
+.coaster .glyph.red{color:var(--brick);}
+.coaster .icon{width:clamp(24px,7.5vw,32px); height:auto; fill:none; stroke:var(--print); stroke-width:2.6;
+  stroke-linecap:round; stroke-linejoin:round; margin-bottom:4px;}
+.coaster .icon circle[r="2.4"]{fill:var(--print); stroke:none;}
+.coaster .icon .spark{stroke:var(--brick); stroke-width:2;}
+.coaster .numeral{font-family:var(--slab); color:var(--print); font-size:clamp(12px,3.6vw,15px); line-height:1; margin-bottom:5px;}
+.coaster .cname{font-family:var(--slab); font-size:clamp(14px,4.2vw,17px); line-height:1.05; color:var(--print); padding:0 16%;}
+.c3 .coaster .cname{font-size:clamp(11.5px,3.4vw,14px); padding:0 14%; hyphens:manual;}
+.coaster .cline{font-size:clamp(11px,3.1vw,12.5px); font-weight:600; line-height:1.2; margin-top:5px; padding:0 20%; color:#4a3f30;}
+
+.coaster:focus-visible{outline:3px solid var(--amber); outline-offset:4px;}
+.coaster:active{transform:rotate(var(--tilt,0deg)) scale(.96);}
+/* tikken = viltje omklappen; het spel opent halverwege */
+.coaster.flipping{transform:rotate(0deg) rotateY(90deg) scale(1.06);}
+.coaster.chosen{animation:chosen .9s ease-in-out 2;}
+@keyframes chosen{50%{box-shadow:inset 0 0 0 2px var(--board-edge), 0 0 0 5px var(--amber), 0 10px 18px rgba(0,0,0,.4);}}
+
+.btn.fate{display:block; width:100%; margin-top:30px; background:transparent; color:var(--amber);
+  border:2px dashed rgba(232,163,61,.6); border-radius:14px; font-family:var(--slab); font-weight:400; font-size:18px;}
+.btn.fate:active{background:rgba(232,163,61,.12);}
+.homefoot{margin-top:22px; color:var(--mist); font-size:12.5px; text-align:center; opacity:.75;}
+
+/* ================= Spelschermen: rustiger, groter ================= */
+.top{gap:12px; margin-bottom:14px; padding-top:4px;}
+.back{width:44px; height:44px; border-radius:50%; border:0; background:var(--board); color:var(--ink);
+  font-size:24px; font-weight:800; line-height:1; box-shadow:inset 0 0 0 2px var(--board-edge), 0 3px 8px rgba(0,0,0,.35);}
+.top h1{font-size:21px; line-height:1.1;}
+.top .meta{font-size:13px;}
+.btn{font-family:var(--sans); letter-spacing:.2px;}
+.btn.primary{font-size:18px; padding:16px 18px; border-radius:16px; box-shadow:0 4px 0 #8a5a14;}
+.btn.primary:active{box-shadow:0 1px 0 #8a5a14; transform:translateY(3px);}
+.btn.ghost{border:1.5px solid rgba(246,241,227,.28); font-weight:700;}
+.seg{border-radius:14px; background:rgba(0,0,0,.22);}
+.seg button{font-size:14.5px; font-weight:600; padding:12px 6px; font-family:var(--sans);}
+input[type=text], input[type=number], select{border-radius:12px; padding:13px 14px;}
+.chip{font-size:15px; font-weight:700; padding:8px 14px;}
+.note{font-size:14px; line-height:1.55;}
+.banner{font-size:20px; border-radius:16px;}
+.rule{font-size:17px; border-radius:16px;}
+.panel{border-radius:16px;}
+.rk{font-size:17px; padding:14px 0; font-family:var(--sans);}
+.face.back{border-color:var(--board);}
+.face.front, .scard, .mini, .pcard.up{background:#F3EBDB;}
+
+
+/* ---------- Dobbelstenen (Mexen) ---------- */
+.dice{gap:26px; font-size:0; min-height:120px; align-items:center;}
+.die{width:var(--d); height:var(--d); border-radius:20%; padding:calc(var(--d) * .13);
+  display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); place-items:center;
+  background:radial-gradient(circle at 30% 25%, #fff8 0, transparent 55%), #F3EBDB;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.12), inset 0 0 0 2px var(--board-edge), 0 10px 20px rgba(0,0,0,.45);}
+.die{--d:min(30vw,112px);}
+.die i{width:calc(var(--d) * .17); height:calc(var(--d) * .17); border-radius:50%;}
+.die i.p{background:var(--ink); box-shadow:inset 0 2px 2px rgba(0,0,0,.5);}
+.die.one i.p{background:var(--brick); width:calc(var(--d) * .22); height:calc(var(--d) * .22);}
+.die.blank{background:repeating-linear-gradient(45deg,var(--felt-soft) 0 8px,var(--felt) 8px 16px);
+  box-shadow:inset 0 0 0 4px var(--board), 0 10px 20px rgba(0,0,0,.45);}
+.sw{letter-spacing:-1px; margin-right:4px;} .sw.red{color:var(--brick);}
+@media (prefers-reduced-motion: reduce){
+  .coaster, .flip, .horse{transition:none !important;}
+  .coaster.chosen, .banner.pop, .bombwrap{animation:none !important;}
+}
+
 @media (orientation: landscape) and (max-height: 520px){
   #race-game{max-width:none; padding:8px 16px calc(8px + env(safe-area-inset-bottom));}
   #race-game .top{margin-bottom:4px;}
@@ -248,43 +341,89 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
 
 <!-- ================= HOME ================= -->
 <section class="screen on" id="home">
-  <div class="logo">KANTINE</div>
-  <div class="tagline">Drankspellen zonder kaartset — één telefoon is genoeg.</div>
+  <header class="hhead">
+    <h1 class="logo">Kantine</h1>
+    <p class="tagline">Eén telefoon op tafel. Tik een viltje aan.</p>
+  </header>
 
-  <div class="tilegrid">
-    <button class="tile" onclick="openFtd()">
-      <h2>Fuck the Dealer</h2><p>Gok de kaart, tel het deck.</p><span class="wm">♠</span>
+  <section class="table-roster" aria-label="Spelers">
+    <h2 class="hsect">Wie zitten er aan tafel?</h2>
+    <div class="players" id="homeChips"></div>
+    <form class="addrow" onsubmit="event.preventDefault(); homeAdd()">
+      <input type="text" id="homeName" placeholder="Naam toevoegen" autocomplete="off" enterkeyhint="done">
+      <button type="submit" class="addbtn" aria-label="Speler toevoegen">+</button>
+    </form>
+  </section>
+
+  <h2 class="hsect">Met kaarten</h2>
+  <div class="coasters c2">
+    <button class="coaster round brick" style="--tilt:-3deg" data-open="openFtd">
+      <span class="ring"></span>
+      <span class="glyph">♠</span>
+      <span class="cname">Fuck the Dealer</span>
+      <span class="cline">Gok de kaart, tel het deck</span>
     </button>
-    <button class="tile" onclick="openKing()">
-      <h2>Kingsen</h2><p>Ken je regel — of spiek.</p><span class="wm">♦</span>
+    <button class="coaster round brick" style="--tilt:4deg" data-open="openKing">
+      <span class="ring"></span>
+      <span class="glyph red">♦</span>
+      <span class="cname">Kingsen</span>
+      <span class="cline">Ken je regel of spiek</span>
     </button>
-    <button class="tile" onclick="openBus()">
-      <h2>Bussen</h2><p>Vier vragen, piramide, bus.</p><span class="wm">♣</span>
+    <button class="coaster round brick" style="--tilt:2deg" data-open="openBus">
+      <span class="ring"></span>
+      <span class="glyph">♣</span>
+      <span class="cname">Bussen</span>
+      <span class="cline">Vragen, piramide, bus</span>
     </button>
-    <button class="tile" onclick="go('race-setup')">
-      <h2>Paardenrace</h2><p>Zet slokken in op je aas.</p><span class="wm">♥</span>
-    </button>
-    <button class="tile" onclick="openMex()">
-      <h2>Mexen</h2><p>Mex, vaasjes, laagste drinkt.</p><span class="wm">🎲</span>
-    </button>
-    <button class="tile" onclick="go('bomb-setup')">
-      <h2>Tikkende Tijdbom</h2><p>Noem iets en geef 'm door.</p><span class="wm">💣</span>
-    </button>
-    <button class="tile" onclick="duelOpen()">
-      <h2>Reactieduel</h2><p>Tik op groen. Te vroeg = dubbel.</p><span class="wm">⚡</span>
-    </button>
-    <button class="tile" onclick="mwOpen()">
-      <h2>Meest Waarschijnlijk</h2><p>3-2-1... wijs iemand aan.</p><span class="wm">👉</span>
-    </button>
-    <button class="tile" onclick="nhOpen()">
-      <h2>Nooit Heb Ik Ooit</h2><p>Wél gedaan? Drinken.</p><span class="wm">🙈</span>
-    </button>
-    <button class="tile" onclick="ddOpen()">
-      <h2>Doen of Drinken</h2><p>Opdracht weigeren kost slokken.</p><span class="wm">🎯</span>
+    <button class="coaster round brick" style="--tilt:-5deg" data-open="openRace">
+      <span class="ring"></span>
+      <span class="glyph red">♥</span>
+      <span class="cname">Paardenrace</span>
+      <span class="cline">Zet slokken in op je aas</span>
     </button>
   </div>
 
-  <div class="homefoot">Zet op je beginscherm via ‘Delen → Zet op beginscherm’ (iPhone) of ‘Installeren’ (Android).</div>
+  <h2 class="hsect">Dobbelen en reflex</h2>
+  <div class="coasters c3">
+    <button class="coaster square cobalt" style="--tilt:3deg" data-open="openMex">
+      <span class="ring"></span>
+      <svg class="icon" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="4" width="24" height="24" rx="5"/><circle cx="11" cy="11" r="2.4"/><circle cx="21" cy="21" r="2.4"/><circle cx="16" cy="16" r="2.4"/></svg>
+      <span class="cname">Mexen</span>
+    </button>
+    <button class="coaster square cobalt" style="--tilt:-4deg" data-open="openBomb">
+      <span class="ring"></span>
+      <svg class="icon" viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="19.5" r="9.5"/><rect x="16.2" y="7.6" width="5" height="4.6" rx="1" transform="rotate(45 18.7 9.9)"/><path d="M21.5 7.5c1.5-3 4-3 5-1.5"/><path class="spark" d="M28 3.5v2.4M28 9.2v2.3M24.6 6.7h-2M31.4 6.7h-2"/></svg>
+      <span class="cname">Tijdbom</span>
+    </button>
+    <button class="coaster square cobalt" style="--tilt:2deg" data-open="duelOpen">
+      <span class="ring"></span>
+      <svg class="icon" viewBox="0 0 32 32" aria-hidden="true"><path d="M18 3L8 18h8l-2 11 10-15h-8z"/></svg>
+      <span class="cname">Reactie&shy;duel</span>
+    </button>
+  </div>
+
+  <h2 class="hsect">Kletsen</h2>
+  <div class="coasters c3">
+    <button class="coaster round amber" style="--tilt:-2deg" data-open="mwOpen">
+      <span class="ring"></span>
+      <span class="numeral">3·2·1</span>
+      <span class="cname">Meest waar&shy;schijnlijk</span>
+    </button>
+    <button class="coaster round amber" style="--tilt:5deg" data-open="nhOpen">
+      <span class="ring"></span>
+      <span class="numeral">nooit</span>
+      <span class="cname">Nooit heb ik ooit</span>
+    </button>
+    <button class="coaster round amber" style="--tilt:-4deg" data-open="ddOpen">
+      <span class="ring"></span>
+      <span class="numeral">doen?</span>
+      <span class="cname">Doen of drinken</span>
+    </button>
+  </div>
+
+  <button class="btn fate" id="fateBtn" onclick="homeFate()">Laat het lot kiezen</button>
+
+  <p class="homefoot">Op je beginscherm zetten: Delen → Zet op beginscherm (iPhone) of Installeren (Android).</p>
 </section>
 
 <!-- ================= FTD SETUP ================= -->
@@ -404,7 +543,7 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
     <div id="kingEdit"></div>
     <div class="row mt">
       <input type="text" id="kingPackName" placeholder="Naam voor eigen pack">
-      <button class="btn ghost small" onclick="kingSavePack()" style="flex:0 0 auto">💾 Opslaan</button>
+      <button class="btn ghost small" onclick="kingSavePack()" style="flex:0 0 auto">Opslaan</button>
     </div>
     <button class="btn ghost small mt" onclick="kingResetRules()">↩︎ Herstel dit pack</button>
   </details>
@@ -494,12 +633,12 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
     <div class="meta" id="mexMeta"></div>
   </div>
   <div class="players" id="mexPlayers"></div>
-  <div class="dice" id="mexDice"><span>🎲</span><span>🎲</span></div>
+  <div class="dice" id="mexDice"><span class="die blank"></span><span class="die blank"></span></div>
   <div class="banner" id="mexBanner">Eerste speler mag gooien</div>
   <div class="panel" id="mexBoard" style="display:none"></div>
   <div class="mtl">
     <div class="row">
-      <button class="btn primary" id="mexRoll" onclick="mexRoll()">🎲 Gooi</button>
+      <button class="btn primary" id="mexRoll" onclick="mexRoll()">Gooi</button>
       <button class="btn ghost" id="mexStay" onclick="mexStay()" style="display:none">Blijven staan</button>
     </div>
     <button class="btn primary mt" id="mexNextRound" onclick="mexRound()" style="display:none">Nieuwe ronde</button>
@@ -525,7 +664,7 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
     <button data-m="mix" onclick="bombModeSet(this)">Mix</button>
   </div>
   <p class="note">De telefoon is de bom. Er verschijnt een categorie: noem iets en geef de telefoon door aan je buurman. Niemand weet wanneer hij afgaat — bij wie hij ontploft: drinken. Zet je geluid aan 🔊</p>
-  <div class="mtl"><button class="btn primary" onclick="bombStart()">💣 Steek de lont aan</button></div>
+  <div class="mtl"><button class="btn primary" onclick="bombStart()">Steek de lont aan</button></div>
 </section>
 
 <!-- ================= TIJDBOM GAME ================= -->
@@ -539,14 +678,14 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
     <div class="bigword" id="bombCat"></div>
   </div>
   <div class="row mt">
-    <button class="btn ghost small" onclick="bombSkip()" style="flex:1">⏭ Andere categorie</button>
+    <button class="btn ghost small" onclick="bombSkip()" style="flex:1">Andere opgave</button>
   </div>
   <div class="mtl"><button class="btn ghost" onclick="bombStop();go('bomb-setup')">Stop</button></div>
 </section>
 <div id="bombBoom">
   <div class="boomtxt">💥 BOEM!</div>
   <div style="font-size:19px">Wie de telefoon vastheeft: <b>drinken!</b></div>
-  <button class="btn primary" onclick="bombAgain()">💣 Nieuwe bom</button>
+  <button class="btn primary" onclick="bombAgain()">Nieuwe bom</button>
   <button class="btn ghost" onclick="bombClose()">Menu</button>
 </div>
 
@@ -587,7 +726,7 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   <div class="bigword" id="mwText"></div>
   <div class="banner" id="mwHint" style="display:none">👉 Meeste vingers = drinken</div>
   <div class="mtl">
-    <button class="btn primary" id="mwCountBtn" onclick="mwCountdown()">🫵 Tel af: 3-2-1 wijs!</button>
+    <button class="btn primary" id="mwCountBtn" onclick="mwCountdown()">Tel af en wijs</button>
     <button class="btn primary" id="mwNextBtn" onclick="mwNext()" style="display:none">Volgende stelling</button>
   </div>
 </section>
@@ -660,8 +799,8 @@ h2.sect{font-family:var(--slab); font-weight:400; font-size:18px; margin:16px 0 
   <div class="panel" id="ddBoard" style="display:none"></div>
   <div class="mtl">
     <div class="row" id="ddChoice">
-      <button class="btn primary" onclick="ddDone(true)">✔ Gedaan</button>
-      <button class="btn primary" onclick="ddDone(false)">🍺 Drinken</button>
+      <button class="btn primary" onclick="ddDone(true)">Gedaan</button>
+      <button class="btn primary" onclick="ddDone(false)">Drinken</button>
     </div>
     <button class="btn primary mt" id="ddNextBtn" onclick="ddNext()" style="display:none">Volgende speler</button>
   </div>
@@ -711,6 +850,7 @@ function go(id){
   $('#'+id).classList.add('on');
   window.scrollTo(0,0);
   if(id!=='home') keepAwake();
+  if(id==='home' && typeof homeRender==='function') homeRender();
 }
 let wakeLock=null;
 async function keepAwake(){
@@ -1163,7 +1303,7 @@ function kingRuleInputHTML(p){
   return `<div class="rule mt"><b>${p}</b> bedenkt een nieuwe huisregel 📜</div>
     <input type="text" id="kingNewRule" value="${esc(K.draftRule||'')}" oninput="K.draftRule=this.value"
       onkeydown="if(event.key==='Enter')kingSaveRule()" placeholder="Bijv. niet met je rechterhand drinken">
-    <button class="btn ghost small mt" onclick="kingSaveRule()">✔ Opslaan — blijft het hele potje staan</button>`;
+    <button class="btn ghost small mt" onclick="kingSaveRule()">Regel opslaan</button>`;
 }
 function kingSaveRule(){
   const t=(K.draftRule||'').trim();
@@ -1179,7 +1319,7 @@ function kingRefreshArea(){
   const p=K.names[K.idx];
   let html='';
   if(K.revealed) html=kingRuleHTML();
-  else if(K.hint==='tik') html=`<button class="btn ghost mt" onclick="kingShowRule()">🫣 Toon regel (spieken)</button>`;
+  else if(K.hint==='tik') html=`<button class="btn ghost mt" onclick="kingShowRule()">Spiek de regel</button>`;
   else html=`<p class="note center mt">Jullie weten hem zelf.</p>`;
   if(K.cur && !K.over && K.roles && K.cur.v===K.roles.mate) html+=kingMatePickerHTML(p);
   if(K.cur && !K.over && K.roles && K.cur.v===K.roles.rule) html+=kingRuleInputHTML(p);
@@ -1251,7 +1391,7 @@ function ftdShowMini(l){
     <p class="note" style="margin-top:0">Wie de laatste ${l} trok, kiest een minigame voor de hele groep:</p>
     <select id="ftdMiniSel" onchange="ftdMiniDesc(this.value)">${opts}</select>
     <div class="rule" id="ftdMiniTxt"></div>
-    <button class="btn primary mt" onclick="ftdMiniDone()">Gespeeld ✔</button>`;
+    <button class="btn primary mt" onclick="ftdMiniDone()">Gespeeld</button>`;
   ftdMiniDesc(0);
   $('#ftdNext').style.display='none';
   F.miniOpen=true;
@@ -1300,9 +1440,9 @@ function busQ(){
   busMeta('Fase 1<br>vraag '+(B.qi+1)+'/4');
   const titles=['Rood of zwart?','Hoger of lager dan je 1e kaart?','Binnen of buiten je eerste twee?','Welke soort?'];
   let btns='';
-  if(B.qi===0) btns=`<div class="row"><button class="btn primary" onclick="busAns('rood')">🟥 Rood</button><button class="btn primary" onclick="busAns('zwart')">⬛ Zwart</button></div>`;
-  else if(B.qi===1) btns=`<div class="row"><button class="btn primary" onclick="busAns('hoger')">⬆ Hoger</button><button class="btn primary" onclick="busAns('lager')">⬇ Lager</button></div>`;
-  else if(B.qi===2) btns=`<div class="row"><button class="btn primary" onclick="busAns('binnen')">↔ Binnen</button><button class="btn primary" onclick="busAns('buiten')">⇔ Buiten</button></div>`;
+  if(B.qi===0) btns=`<div class="row"><button class="btn primary" onclick="busAns('rood')"><span class="sw red">♥♦</span> Rood</button><button class="btn primary" onclick="busAns('zwart')"><span class="sw">♠♣</span> Zwart</button></div>`;
+  else if(B.qi===1) btns=`<div class="row"><button class="btn primary" onclick="busAns('hoger')">↑ Hoger</button><button class="btn primary" onclick="busAns('lager')">↓ Lager</button></div>`;
+  else if(B.qi===2) btns=`<div class="row"><button class="btn primary" onclick="busAns('binnen')">Binnen</button><button class="btn primary" onclick="busAns('buiten')">Buiten</button></div>`;
   else btns=`<div class="ranks" style="grid-template-columns:repeat(4,1fr)">${SUITS.map(s=>`<button class="rk" onclick="busAns('${s.s}')"><span class="${s.c==='red'?'redsuit':''}">${s.s}</span></button>`).join('')}</div>`;
   $('#busArea').innerHTML=`
     <div class="banner">${p} — ${titles[B.qi]}</div>
@@ -1362,7 +1502,7 @@ function busPyrRender(msg){
     <div class="pyr">${rowsHtml}</div>
     ${msg?`<div class="banner pop">${msg}</div>`:'<div class="banner">Kaart erop? De app legt \'m vanzelf voor je op.</div>'}
     ${B.pIdx<total?`<button class="btn primary" onclick="busPyrFlip()">Draai kaart ${B.pIdx+1}/${total}</button>`
-      :`<button class="btn primary" onclick="busToBus()">Naar de bus 🚌</button>`}`;
+      :`<button class="btn primary" onclick="busToBus()">Naar de bus</button>`}`;
 }
 function busPyrFlip(){
   let idx=0, target=null, row=0;
@@ -1451,8 +1591,8 @@ function busBusRender(msg){
     ${done?`<div class="banner good pop">${B.loser} is uit de bus! 🎉</div>
       <button class="btn primary" onclick="go('bus-setup')">Nieuw potje</button>`
     :`<div class="row">
-      <button class="btn primary" onclick="busGuess('hoger')">⬆ Hoger</button>
-      <button class="btn primary" onclick="busGuess('lager')">⬇ Lager</button>
+      <button class="btn primary" onclick="busGuess('hoger')">↑ Hoger</button>
+      <button class="btn primary" onclick="busGuess('lager')">↓ Lager</button>
     </div>
     <p class="note center">Hoger of lager dan de ${cur.l}${cur.s}? Gelijk telt als fout.</p>`}`;
 }
@@ -1495,7 +1635,7 @@ function mexRound(){
   M.idx=0; M.maxT=3; M.used=0; M.locked={}; M.mex=0; M.phase='turn'; M.rolling=false; M.tieList=[];
   $('#mexNextRound').style.display='none';
   $('#mexRoll').style.display='block'; $('#mexStay').style.display='none';
-  $('#mexDice').innerHTML='<span>🎲</span><span>🎲</span>';
+  $('#mexDice').innerHTML=dieHTML(0)+dieHTML(0);
   $('#mexBoard').style.display='none';
   setBanner('#mexBanner',`${M.names[0]} mag gooien (max 3×)`,'');
   mexRenderPlayers();
@@ -1508,7 +1648,14 @@ function mexRenderPlayers(){
   }).join('');
   $('#mexMeta').innerHTML=(M.phase==='tie'?'gooi om!':`worp ${Math.min(M.used+1,M.maxT)}/${M.maxT}`);
 }
-function mexShowDice(a,b){ $('#mexDice').innerHTML=`<span>${DIE[a-1]}</span><span>${DIE[b-1]}</span>`; }
+/* Zelfgetekende dobbelstenen: 3x3 raster, pips op de klassieke plekken */
+const PIPS={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function dieHTML(n){
+  if(!n) return '<span class="die blank" aria-hidden="true"></span>';
+  return `<span class="die${n===1?' one':''}" role="img" aria-label="${n}">`+
+    [...Array(9)].map((_,i)=>`<i${PIPS[n].includes(i)?' class="p"':''}></i>`).join('')+'</span>';
+}
+function mexShowDice(a,b){ $('#mexDice').innerHTML=dieHTML(a)+dieHTML(b); }
 function mexRoll(){
   if(M.rolling||M.phase==='done') return;
   M.rolling=true;
@@ -1538,7 +1685,7 @@ function mexResult(a,b){
   else msg=`${M.names[M.idx]} gooit ${sc.d}`;
   const canRethrow = M.used<M.maxT && sc.v!==1000;
   setBanner('#mexBanner',msg, sc.v===1000?'good':(vaasje?'bad':''));
-  if(canRethrow){ $('#mexStay').style.display='block'; $('#mexRoll').textContent='🎲 Nog een keer'; }
+  if(canRethrow){ $('#mexStay').style.display='block'; $('#mexRoll').textContent='Nog een keer'; }
   else mexLock(sc);
   mexRenderPlayers();
 }
@@ -1548,7 +1695,7 @@ function mexLock(sc){
   M.locked[p]=sc;
   if(M.idx===0) M.maxT=M.used;
   M.idx++; M.used=0;
-  $('#mexStay').style.display='none'; $('#mexRoll').textContent='🎲 Gooi';
+  $('#mexStay').style.display='none'; $('#mexRoll').textContent='Gooi';
   if(M.idx>=M.names.length) return mexResolve();
   setBanner('#mexBanner',`${M.names[M.idx]} is aan de beurt — max ${M.maxT}×`,'');
   mexRenderPlayers();
@@ -1911,6 +2058,49 @@ function ddRenderBoard(){
   b.innerHTML='<h3>Stand</h3>'+DD.names.map(n=>
     `<div class="handrow"><b>${esc(n)}</b> <span class="note">${DD.done[n]||0}× gedaan · ${DD.drank[n]||0} ${(DD.drank[n]||0)===1?'slok':'slokken'}</span></div>`).join('');
 }
+
+
+/* ================= Home: tafel, viltjes, lot ================= */
+function openRace(){ go('race-setup'); }
+function openBomb(){ go('bomb-setup'); }
+function homeNames(){ return load('names',[]); }
+function homeRender(){
+  const el=document.getElementById('homeChips'); if(!el) return;
+  el.innerHTML=homeNames().map((n,i)=>`<span class="chip">${esc(n)}<span class="x" role="button" aria-label="${esc(n)} weghalen" onclick="homeRemove(${i})">✕</span></span>`).join('');
+}
+function homeAdd(){
+  const inp=document.getElementById('homeName'); const n=inp.value.trim();
+  if(!n) return;
+  const names=homeNames();
+  if(!names.includes(n)) names.push(n);
+  store('names',names); inp.value=''; homeRender();
+}
+function homeRemove(i){ const names=homeNames(); names.splice(i,1); store('names',names); homeRender(); }
+
+let homeBusy=false;
+function homeOpen(btn){
+  if(homeBusy) return;
+  const fn=window[btn.dataset.open]; if(typeof fn!=='function') return;
+  const reduce=window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ fn(); return; }
+  homeBusy=true;
+  btn.classList.add('flipping');
+  setTimeout(()=>{ fn(); homeBusy=false; btn.classList.remove('flipping'); },260);
+}
+function homeFate(){
+  if(homeBusy) return;
+  const all=[...document.querySelectorAll('#home .coaster')];
+  const pick=all[randInt(all.length)];
+  homeBusy=true;
+  all.forEach(c=>c.classList.remove('chosen'));
+  pick.scrollIntoView({behavior:'smooth', block:'center'});
+  pick.classList.add('chosen');
+  document.getElementById('fateBtn').textContent='Het wordt: '+pick.querySelector('.cname').textContent.replace(/­/g,'');
+  setTimeout(()=>{ homeBusy=false; pick.classList.remove('chosen'); homeOpen(pick);
+    document.getElementById('fateBtn').textContent='Laat het lot kiezen'; },1900);
+}
+document.querySelectorAll('#home .coaster').forEach(b=>b.addEventListener('click',()=>homeOpen(b)));
+homeRender();
 
 /* ================= PWA ================= */
 if('serviceWorker' in navigator){
